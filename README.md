@@ -71,7 +71,7 @@ This retains original-release identities and records local changes separately. A
 
 GitHub Actions runs only for `v*` tags or **Run workflow**. It checks the committed assets and builds macOS ARM64 / Intel, Windows x64 and Linux x64 / ARM64 bundles. Tags attach assets to a **draft** GitHub release; review it before publishing. Hosted macOS bundles are unsigned.
 
-For local signed / notarized macOS releases, use your existing local Developer ID certificate and set `APPLE_SIGNING_IDENTITY`, `APPLE_ID`, `APPLE_TEAM_ID`, and `APPLE_PASSWORD` in your environment, then run `sh deploy_mac.sh`. The script builds both Intel and Apple Silicon app / DMG bundles. Do not commit passwords or certificates; this repository does not require uploading a Mac certificate to GitHub.
+For local signed / notarized macOS releases, use your existing local Developer ID certificate, provide `APPLE_PASSWORD` in your environment, then run `sh deploy_mac.sh`. The signing identity, Apple account and Team ID defaults match the other Tetorica Synth wrappers. The script builds both Intel and Apple Silicon app / DMG bundles. Do not commit passwords or certificates; this repository does not require uploading a Mac certificate to GitHub.
 
 ## Sources and licenses
 
