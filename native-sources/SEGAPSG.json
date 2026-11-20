@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "component": "segapsg",
+  "sdk": {
+    "schemaVersion": 1,
+    "name": "tetorica-soundchip-native",
+    "version": "0.1.8-fm2608-source-mixer",
+    "sourceCommit": "95cf71a857b15d0ea932ebf97d5fde80b5e80a95",
+    "archiveName": "tetorica-soundchip-native-0.1.8-fm2608-source-mixer-sources.zip",
+    "archiveSha256": "2664067b9c4e652ecc58bf9fdf5db2ee40d9ef4038403fcefb53a6964e7df34f",
+    "manifestSha256": "83c0adec744e8ddd04cbf733c6e83460bc5ff69eff39d7d772f4df454ca5f1cf",
+    "fileCount": 486,
+    "localCandidate": {
+      "baseCommit": "95cf71a857b15d0ea932ebf97d5fde80b5e80a95",
+      "changedPaths": [
+        "CHANGELOG.md",
+        "CMakeLists.txt",
+        "catalog/chips.json",
+        "catalog/native_inventory.json",
+        "catalog/source_inventory.json",
+        "docs/huc6280-local-candidate.json",
+        "docs/huc6280-state.md",
+        "docs/ym2413-state.md",
+        "docs/ym2608-source-mixer.md",
+        "native/CMakeLists.txt",
+        "native/include/tetorica/huc6280.hpp",
+        "native/include/tetorica/huc6280_state.h",
+        "native/tests/huc6280_state_fixture.cpp",
+        "scripts/build_huc6280_wasm.sh",
+        "scripts/build_spc_wasm.sh",
+        "scripts/build_ym2413_wasm.sh",
+        "scripts/build_ym2608_wasm.sh",
+        "sdk.json",
+        "tests/huc6280_state_wasm_smoke.mjs",
+        "tests/ym2413_state_wasm_smoke.mjs",
+        "tests/ym2608_output_gains_wasm_smoke.mjs",
+        "tests/ym2608_source_gains_wasm_smoke.mjs",
+        "vendor/mame-ay8910/README.md",
+        "vendor/mame-ay8910/ay8910.cpp",
+        "vendor/mame-ay8910/ay8910.h",
+        "vendor/mame-huc6280/README.md",
+        "vendor/mame-huc6280/huc6280.cpp",
+        "vendor/mame-huc6280/huc6280.h",
+        "vendor/snes-spc/README.md",
+        "vendor/snes-spc/snes_spc/SNES_SPC.h",
+        "wasm/ay8910_wasm.cpp",
+        "wasm/huc6280_wasm.cpp",
+        "wasm/spc_wasm.cpp",
+        "wasm/ym2413_wasm.cpp",
+        "wasm/ym2608_wasm.cpp"
+      ]
+    }
+  },
+  "build": {
+    "id": "segapsg",
+    "format": "emscripten-es-module",
+    "sourceFingerprint": "bf6deccd6b6a2a713beec440da4b204f405326881c76ba0c7b8b605df7eac4a1",
+    "sourceFiles": [
+      {
+        "path": "scripts/build-wasm.sh",
+        "sha256": "caf6bd1688d21b48cf5c633aac9aa9398ad727b8b5445fca7aa37718d7dca33f",
+        "size": 1696
+      },
+      {
+        "path": "scripts/build_segapsg_wasm.sh",
+        "sha256": "9fb197e92a6993bb43c24aa75f16209f5e5a6144a6821cfb58340b742db2dc3f",
+        "size": 891
+      },
+      {
+        "path": "scripts/record_wasm_build.mjs",
+        "sha256": "8728a4b3f31e78db4410ab38d36bff72bfd5cd7bbd9c6f6fdb7dad1d53fe0dbf",
+        "size": 2006
+      },
+      {
+        "path": "vendor/tetorica_sega_psg/segapsg.cpp",
+        "sha256": "05efbf3f6ad854ec64482afab29e016674d28505afc69e01058b1a634a27af3e",
+        "size": 7819
+      },
+      {
+        "path": "vendor/tetorica_sega_psg/segapsg.h",
+        "sha256": "123143939d5d260b9670119d098b48a836a99f74e3b9458c888242c15278242e",
+        "size": 2156
+      },
+      {
+        "path": "vendor/ymfm/chip_state.h",
+        "sha256": "ecf7cd301fc1c790af663cedfbbccd3f7403392b459baaf82e2581ee652816b1",
+        "size": 521
+      },
+      {
+        "path": "wasm/segapsg_wasm.cpp",
+        "sha256": "4ce18ea3f2167d6c0b81abc809948bd21f7a540fbe6aa50ef6f5db1961c97e8e",
+        "size": 1392
+      }
+    ],
+    "outputs": [
+      {
+        "path": "segapsg_wasm.js",
+        "sha256": "527819d4972f11b21311b487c035107b45e18468937297dddb7dc1592b42e1c7",
+        "size": 33978
+      },
+      {
+        "path": "segapsg_wasm.wasm",
+        "sha256": "c991ed0bd54da10810aeda4008d16832790408d7bbf8a8a0959b3ab4a26a3305",
+        "size": 27286
+      }
+    ],
+    "compiler": {
+      "command": "em++",
+      "version": "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.6-git\nCopyright (C) 2026 the Emscripten authors (see AUTHORS.txt)\nThis is free and open source software under the MIT license.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+    },
+    "verification": "compiled from the included source snapshot; runtime smoke is reported separately"
+  },
+  "inputs": [
+    {
+      "path": "segapsg-sdk/LICENSE",
+      "bytes": 1517,
+      "sha256": "d49c2f05a09d2d648c05a5af92240a5dc4059830bc29afbb8919c6d1ba76bf91"
+    },
+    {
+      "path": "segapsg-sdk/catalog/source_inventory.json",
+      "bytes": 157268,
+      "sha256": "fc055c2b3445afd9c102f9a6e750a480dc86eab3d19ebba60edb7a862f79b2c3"
+    },
+    {
+      "path": "segapsg-sdk/docs/chip-differences.md",
+      "bytes": 55132,
+      "sha256": "1fd85dd66b785fe865f5aad83093e21c8bc21e19c7c2cc292f4341bbee5569df"
+    },
+    {
+      "path": "segapsg-sdk/scripts/build-wasm.sh",
+      "bytes": 1696,
+      "sha256": "caf6bd1688d21b48cf5c633aac9aa9398ad727b8b5445fca7aa37718d7dca33f"
+    },
+    {
+      "path": "segapsg-sdk/scripts/build_segapsg_wasm.sh",
+      "bytes": 891,
+      "sha256": "9fb197e92a6993bb43c24aa75f16209f5e5a6144a6821cfb58340b742db2dc3f"
+    },
+    {
+      "path": "segapsg-sdk/scripts/record_wasm_build.mjs",
+      "bytes": 2006,
+      "sha256": "8728a4b3f31e78db4410ab38d36bff72bfd5cd7bbd9c6f6fdb7dad1d53fe0dbf"
+    },
+    {
+      "path": "segapsg-sdk/sdk.json",
+      "bytes": 305,
+      "sha256": "48b53d9cfee9ee7f8f9c6501fce6edfd5c530bd1e9878c8523285d4a7aaac2cf"
+    },
+    {
+      "path": "segapsg-sdk/vendor/tetorica_sega_psg/LICENSE",
+      "bytes": 1517,
+      "sha256": "d49c2f05a09d2d648c05a5af92240a5dc4059830bc29afbb8919c6d1ba76bf91"
+    },
+    {
+      "path": "segapsg-sdk/vendor/tetorica_sega_psg/README.md",
+      "bytes": 1912,
+      "sha256": "9536875b83eac226b00d6e183a1040db9903a0a118b093183a7edd02a7c2e38e"
+    },
+    {
+      "path": "segapsg-sdk/vendor/tetorica_sega_psg/segapsg.cpp",
+      "bytes": 7819,
+      "sha256": "05efbf3f6ad854ec64482afab29e016674d28505afc69e01058b1a634a27af3e"
+    },
+    {
+      "path": "segapsg-sdk/vendor/tetorica_sega_psg/segapsg.h",
+      "bytes": 2156,
+      "sha256": "123143939d5d260b9670119d098b48a836a99f74e3b9458c888242c15278242e"
+    },
+    {
+      "path": "segapsg-sdk/vendor/ymfm/chip_state.h",
+      "bytes": 521,
+      "sha256": "ecf7cd301fc1c790af663cedfbbccd3f7403392b459baaf82e2581ee652816b1"
+    },
+    {
+      "path": "segapsg-sdk/wasm/segapsg_wasm.cpp",
+      "bytes": 1392,
+      "sha256": "4ce18ea3f2167d6c0b81abc809948bd21f7a540fbe6aa50ef6f5db1961c97e8e"
+    }
+  ],
+  "generated": {
+    "segapsg_wasm.js": {
+      "bytes": 33978,
+      "sha256": "527819d4972f11b21311b487c035107b45e18468937297dddb7dc1592b42e1c7"
+    },
+    "segapsg_wasm.wasm": {
+      "bytes": 27286,
+      "sha256": "c991ed0bd54da10810aeda4008d16832790408d7bbf8a8a0959b3ab4a26a3305"
+    }
+  }
+}

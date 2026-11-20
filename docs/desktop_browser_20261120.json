@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "passed": true,
+  "createdAt": "2026-11-20T11:56:24.625Z",
+  "scope": "Packaged SMSGEAR assets and real PSG/YM2413/FX WASM + AudioWorklets in physically muted Chromium and WebKit.",
+  "limitations": [
+    "Tauri IPC is mocked; no CPAL device is opened and this is not a listening test.",
+    "Monaco CDN is deliberately blocked; Code uses its built-in textarea fallback."
+  ],
+  "sources": {
+    "desktop/audio-interface.js": "6b0e5736a7826a437709dfe8d0628d61a453a59bceb55c6516183ee3f2ea36ad",
+    "desktop/desktop-interface.js": "3d74df327c7f7d6adac21500d7e1a5c32704305d157c1b847ff65293f8719e8c",
+    "desktop/audio-worklet.js": "d53d1b7909390406e48467485aefb8c835613b1cb7ed7d1f20cc94dd4aa8fd71",
+    "scripts/check-desktop-browser.cjs": "29c901c1910a303805b02b59f09fcc5bb236dcdfb9bb16d1c7144bf267987d92",
+    "dist/synth-smsgear/synth.js": "2d61286e8eea817332eb4171d2bb9d7f79af2665c217a2cc9d77022eb737fb2f",
+    "dist/synth-smsgear/audio.js": "4fa0a867436b657fd9fec990acf1932be8a6fcd7c606ab99d098f0ffa7bf5dae",
+    "dist/generated/segapsg_wasm.wasm": "c991ed0bd54da10810aeda4008d16832790408d7bbf8a8a0959b3ab4a26a3305",
+    "dist/generated/ym2413_wasm.wasm": "59fdec7a39416da6c96c53fa180a046195493082484e4f05831f2de72afeb10a",
+    "dist/js/native_audio_effect.wasm": "d5183259003b3f7fdda5ba1f85e69c10687e95d13f5499fa2f5fbcf08d3de290"
+  },
+  "rows": [
+    {
+      "engine": "chromium",
+      "passed": true,
+      "toolbarUnique": true,
+      "originalMenuPreserved": true,
+      "pin": true,
+      "nativeBinarySave": true,
+      "saveCancel": true,
+      "newProjectBackupCancelPreservesCodeFilesSound": true,
+      "keyboardPeaks": {
+        "segapsg": 0.01950725167989731,
+        "ym2413": 0.020104501396417618
+      },
+      "timedExamples": [
+        {
+          "chip": "segapsg",
+          "peak": 0.006516218651086092,
+          "native": false
+        },
+        {
+          "chip": "ym2413",
+          "peak": 0.0165800079703331,
+          "native": false
+        },
+        {
+          "chip": "segapsg",
+          "peak": 0.025948112830519676,
+          "native": true
+        },
+        {
+          "chip": "ym2413",
+          "peak": 0.02251642569899559,
+          "native": true
+        }
+      ],
+      "referenceVgm": {
+        "filename": "generated-smsgear.vgz",
+        "chips": [
+          "segapsg",
+          "ym2413"
+        ],
+        "peak": 0.07369093596935272
+      },
+      "latestOutputRequestWins": true,
+      "outputSwitchStopsSources": true,
+      "outputSwitchBlocksKeysAndCode": true,
+      "nativeCapturePcm": true,
+      "nativeFxAndMaster": true,
+      "nativeFailureFallback": true,
+      "pagehideTeardown": true,
+      "oneAudioContext": true,
+      "mobileOverflow": 0,
+      "nativePackets": 245,
+      "nativePeak": 0.07369093596935272,
+      "nativeFinite": true,
+      "physicalOutputMuted": true,
+      "nativeHost": "mocked Tauri IPC; no CPAL device",
+      "pageErrors": [],
+      "missingAssets": [],
+      "expectedBlockedMonaco": [
+        "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "passed": true,
+      "toolbarUnique": true,
+      "originalMenuPreserved": true,
+      "pin": true,
+      "nativeBinarySave": true,
+      "saveCancel": true,
+      "newProjectBackupCancelPreservesCodeFilesSound": true,
+      "keyboardPeaks": {
+        "segapsg": 0.01950725167989731,
+        "ym2413": 0.02045198529958725
+      },
+      "timedExamples": [
+        {
+          "chip": "segapsg",
+          "peak": 0.007765976712107658,
+          "native": false
+        },
+        {
+          "chip": "ym2413",
+          "peak": 0.017994768917560577,
+          "native": false
+        },
+        {
+          "chip": "segapsg",
+          "peak": 0.025600627064704895,
+          "native": true
+        },
+        {
+          "chip": "ym2413",
+          "peak": 0.022082246840000153,
+          "native": true
+        }
+      ],
+      "referenceVgm": {
+        "filename": "generated-smsgear.vgz",
+        "chips": [
+          "segapsg",
+          "ym2413"
+        ],
+        "peak": 0.07347634434700012
+      },
+      "latestOutputRequestWins": true,
+      "outputSwitchStopsSources": true,
+      "outputSwitchBlocksKeysAndCode": true,
+      "nativeCapturePcm": true,
+      "nativeFxAndMaster": true,
+      "nativeFailureFallback": true,
+      "pagehideTeardown": true,
+      "oneAudioContext": true,
+      "mobileOverflow": 0,
+      "nativePackets": 221,
+      "nativePeak": 0.07347634434700012,
+      "nativeFinite": true,
+      "physicalOutputMuted": true,
+      "nativeHost": "mocked Tauri IPC; no CPAL device",
+      "pageErrors": [],
+      "missingAssets": [],
+      "expectedBlockedMonaco": [
+        "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"
+      ]
+    }
+  ]
+}

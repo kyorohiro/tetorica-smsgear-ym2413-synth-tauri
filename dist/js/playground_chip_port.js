@@ -1,0 +1,49 @@
+/** AudioWorklet-side direct performance port. Main port only attaches/detaches.
+ * The callback executes existing chip commands; it never asks the UI for audio work.
+ * @param {(command: Record<string, unknown>, reply?: (message: unknown) => void) => void} apply Processor command dispatcher.
+ * @param {() => number} [now] Current audio time in seconds; defaults to currentFrame/sampleRate in a Worklet.
+ * @param {{performanceQueue?: ReturnType<typeof import('./playground_performance_queue.js').createPerformanceQueue>}} [options] Optional Worker audio reservations.
+ * @returns {(data: {type: string, port?: MessagePort}) => boolean} Attach/detach handler; true means the message was handled.
+ */
+export function createChipPortReceiver(apply, now = () => currentFrame / sampleRate, {performanceQueue} = {}) {
+ let port=null, origin=null;
+ const dispatch=(command, reply)=>{
+  if(performanceQueue?.receive(command,reply))return;
+  if(command.type==='reset-sample-schedule'){origin=null;return;}
+  if(command.type==='begin-sample-schedule'){origin ??= now()+Math.max(0,Number(command.lookaheadSeconds)||0);return;}
+  if(command.type==='sample-writes'){
+   origin ??= now();
+   apply({type:'schedule-writes',entries:command.entries.map(({sample,...entry})=>({...entry,time:origin+sample/44100}))});return;
+  }
+  if(command.type==='sample-dac-bank'){
+   origin ??= now();apply({type:'play-dac-bank',name:command.name,time:origin+command.sample/44100});return;
+  }
+  apply(command, reply);
+ };
+ return data=>{
+  // Main uses the same immediate register batches as the direct Worker port.
+  // A whole frequency pair must apply before another port can change its latch.
+  if(Array.isArray(data)){
+   if(data.length<=4096)for(const command of data)dispatch(command);
+   return true;
+  }
+  if(data.type==='attach-chip-port'){
+   port?.close();
+   if(performanceQueue){const session=performanceQueue.getStats().activeSession;if(session)performanceQueue.receive({type:'performance-stop',session});else performanceQueue.clear();}
+   const next=data.port;port=next;origin=null;
+   next.onmessage=({data:commands})=>{
+    if(port!==next)return;
+    if(performanceQueue?.receive(commands,reply=>next.postMessage(reply)))return;
+    if(!Array.isArray(commands)||commands.length>4096)return;
+    for(const command of commands)dispatch(command, reply => next.postMessage(reply));
+   };
+   next.start();return true;
+  }
+  if(data.type==='detach-chip-port'){
+   port?.close();port=null;
+   if(performanceQueue){const session=performanceQueue.getStats().activeSession;if(session)performanceQueue.receive({type:'performance-stop',session});else performanceQueue.clear();}
+   return true;
+  }
+  return false;
+ };
+}

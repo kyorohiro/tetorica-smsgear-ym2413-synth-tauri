@@ -1,0 +1,21 @@
+{
+  "name": "tetorica-smsgear-ym2413-synth-tauri",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "tauri dev --no-dev-server",
+    "build": "tauri build",
+    "import:release": "node scripts/import-release.cjs",
+    "test": "node scripts/test.cjs",
+    "test:browser": "node scripts/check-desktop-browser.cjs",
+    "tauri": "tauri",
+    "icons": "node scripts/generate-icons.mjs",
+    "record:edits": "node scripts/import-release.cjs --record-local-changes"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.11.5",
+    "playwright": "1.63.0"
+  },
+  "license": "BSD-3-Clause",
+  "type": "module"
+}

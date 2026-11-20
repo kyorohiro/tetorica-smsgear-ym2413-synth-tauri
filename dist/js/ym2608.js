@@ -1,0 +1,501 @@
+/**
+ * @file ym2608.js
+ * 実行環境: Browser / Node.js
+ * 依存: WASM（moduleFactory と moduleOptions で読み込み方法を注入）。
+ * チップ操作・PCM 生成に DOM・AudioContext は不要。ローダーは実行環境に合わせて渡す。
+ */
+export const YM2608_CLOCK = 8000000;
+export const YM2608_ADPCM_B_MEMORY_SIZE = 0x200000;
+
+/** @typedef {{fm:number,ssg:number}} Ym2608OutputGains */
+/** @typedef {{fm?:number,ssg?:number}} Ym2608OutputGainPatch */
+/** @typedef {{fm:number,ssg:number,rhythm:number,adpcm:number}} Ym2608SourceGains */
+/** @typedef {{fm?:number,ssg?:number,rhythm?:number,adpcm?:number}} Ym2608SourceGainPatch */
+
+/** Validate host-side output gains before changing either bus.
+ * FM includes the chip's already combined Rhythm and ADPCM-B outputs.
+ * @param {Ym2608OutputGainPatch} gains Partial linear gains, each 0..1024.
+ * @param {Ym2608OutputGains} [current] Previously accepted gains.
+ * @returns {Ym2608OutputGains} Detached validated gains.
+ */
+export function normalizeYm2608OutputGains(gains, current = {fm:1,ssg:1}) {
+  if (!gains || typeof gains !== 'object' || Array.isArray(gains)) throw new TypeError('YM2608 output gains must be an object');
+  const next = {...current};
+  for (const [bus,value] of Object.entries(gains)) {
+    if (bus !== 'fm' && bus !== 'ssg') throw new TypeError('Unknown YM2608 output bus ' + bus);
+    if (!Number.isFinite(value) || value < 0 || value > 1024) throw new RangeError('YM2608 output gains must be finite values from 0 to 1024');
+    next[bus] = value;
+  }
+  return next;
+}
+
+/** Validate independent source gains before changing any sound source.
+ * @param {Ym2608SourceGainPatch} gains Partial linear gains, each 0..1024.
+ * @param {Ym2608SourceGains} [current] Previously accepted gains.
+ * @returns {Ym2608SourceGains} Detached validated source gains.
+ */
+export function normalizeYm2608SourceGains(gains, current = {fm:1,ssg:1,rhythm:1,adpcm:1}) {
+  if (!gains || typeof gains !== 'object' || Array.isArray(gains)) throw new TypeError('YM2608 source gains must be an object');
+  const next = {...current};
+  for (const [source,value] of Object.entries(gains)) {
+    if (!['fm','ssg','rhythm','adpcm'].includes(source)) throw new TypeError('Unknown YM2608 source ' + source);
+    if (!Number.isFinite(value) || value < 0 || value > 1024) throw new RangeError('YM2608 source gains must be finite values from 0 to 1024');
+    next[source] = value;
+  }
+  return next;
+}
+
+/**
+ * Ym2608 chip instance backed by WASM. No AudioContext or playback device is created.
+ * Use create() to initialize and dispose() to release native resources.
+ * Register writes program the chip; generateStereo() advances it to produce PCM.
+ */
+export class Ym2608 {
+  #states = new WeakMap();
+  /**
+   * Wrap native resources allocated by create(); prefer the asynchronous factory.
+   * @param {Object} module Initialized Emscripten module.
+   * @param {number} handle Native chip handle owned by this instance.
+   * @param {Object} api Bound native entry points.
+   */
+  constructor(module, handle, api) {
+    this.module = module;
+    this.handle = handle;
+    this.api = api;
+    this.hooks = {
+      onWrite: undefined,
+      onRead: undefined,
+      onIrq: undefined,
+    };
+    this.lastIrqState = undefined;
+    this.leftPtr = 0;
+    this.rightPtr = 0;
+    this.bufferFrames = 0;
+    this.outputGains = {fm:1,ssg:1};
+    this.sourceGains = {fm:1,ssg:1,rhythm:1,adpcm:1};
+  }
+
+  /**
+   * Initialize Ym2608 and its native WASM module.
+   * The generated module factory is injected so browser and Node callers can choose asset loading.
+   * @param {Object} [options={}] Chip and Emscripten initialization settings.
+   * @param {import('./soundchip.js').WasmModuleFactory} options.moduleFactory Generated WASM module factory.
+   * @param {import('./soundchip.js').WasmModuleOptions} [options.moduleOptions] Forwarded loader options, e.g. wasmBinary or locateFile.
+   * @returns {Promise<Ym2608>} Ready-to-use chip; the caller must dispose it.
+   */
+  static async create(options = {}) {
+    const { moduleFactory, moduleOptions } = options;
+    if (!moduleFactory) {
+      throw new Error("moduleFactory is required");
+    }
+
+    const module = await moduleFactory(moduleOptions || {});
+    const api = {
+      create: module.cwrap("ym2608_create", "number", []),
+      destroy: module.cwrap("ym2608_destroy", null, ["number"]),
+      reset: module.cwrap("ym2608_reset", null, ["number"]),
+      write: module.cwrap("ym2608_write", null, ["number", "number", "number"]),
+      read: optionalCwrap(module, "ym2608_read", "number", ["number", "number"]),
+      readStatus: optionalCwrap(module, "ym2608_read_status", "number", ["number"]),
+      readStatusHi: optionalCwrap(module, "ym2608_read_status_hi", "number", ["number"]),
+      getIrq: optionalCwrap(module, "ym2608_get_irq", "number", ["number"]),
+      sampleRate: module.cwrap("ym2608_sample_rate", "number", ["number", "number"]),
+      loadAdpcmARom: optionalCwrap(module, "ym2608_load_adpcm_a_rom", null, ["number", "number", "number", "number"]),
+      loadAdpcmBMemory: optionalCwrap(module, "ym2608_load_adpcm_b_memory", null, ["number", "number", "number", "number"]),
+      clearAdpcmBMemory: optionalCwrap(module, "ym2608_clear_adpcm_b_memory", null, ["number"]),
+      setSourceMuteMask: optionalCwrap(module, "ym2608_set_source_mute_mask", null, ["number", "number"]),
+      setOutputGains: optionalCwrap(module, "ym2608_set_output_gains", "number", ["number", "number", "number"]),
+      setSourceGains: optionalCwrap(module, "ym2608_set_source_gains", "number", ["number", "number", "number", "number", "number"]),
+      generate: module.cwrap("ym2608_generate", null, ["number", "number", "number", "number"]),
+    };
+
+    const handle = api.create();
+    return new Ym2608(module, handle, api);
+  }
+
+  supportsState() { return !!this.handle && typeof this.module._ym2608_save_state === 'function' && typeof this.module._ym2608_load_state === 'function'; }
+
+  // Opaque, same-instance, same-build state. Output buffers and hooks are not state.
+  /** @returns {Readonly<{byteLength:number}>} Opaque snapshot owned by this instance. */
+  saveState() {
+    if (!this.supportsState()) throw new Error('State saving unavailable');
+    const size = this.module._ym2608_save_state(this.handle, 0);
+    const ptr = this.module._malloc(size);
+    if (!ptr) throw new Error('State allocation failed');
+    try {
+      this.module._ym2608_save_state(this.handle, ptr);
+      const bytes = new Uint8Array(this.module.HEAPF32.buffer, ptr, size).slice();
+      const state = Object.freeze({byteLength: size});
+      this.#states.set(state, {bytes,outputGains:this.getOutputGains(),sourceGains:this.getSourceGains()});
+      return state;
+    } finally { this.module._free(ptr); }
+  }
+  /** @param {Readonly<{byteLength:number}>} state Snapshot returned by this instance. */
+  validateState(state) {
+    if (!this.supportsState() || !this.#states.has(state)) throw new Error('Invalid or foreign chip state');
+  }
+  /** @param {Readonly<{byteLength:number}>} state Snapshot returned by this instance. */
+  loadState(state) {
+    this.validateState(state);
+    const saved = this.#states.get(state), bytes = saved.bytes, ptr = this.module._malloc(bytes.length);
+    if (!ptr) throw new Error('State allocation failed');
+    try {
+      new Uint8Array(this.module.HEAPF32.buffer, ptr, bytes.length).set(bytes);
+      if (!this.module._ym2608_load_state(this.handle, ptr, bytes.length)) throw new Error('Invalid native state');
+      this.outputGains = {...saved.outputGains};
+      this.sourceGains = {...saved.sourceGains};
+      this.#syncIrq();
+    } finally { this.module._free(ptr); }
+  }
+
+  /**
+   * Release native chip state and allocated WASM buffers. Do not use the chip afterward.
+   * @returns {void}
+   */
+  dispose() {
+    if (this.leftPtr) {
+      this.module._free(this.leftPtr);
+      this.leftPtr = 0;
+    }
+    if (this.rightPtr) {
+      this.module._free(this.rightPtr);
+      this.rightPtr = 0;
+    }
+    if (this.handle) {
+      this.api.destroy(this.handle);
+      this.handle = 0;
+    }
+    this.bufferFrames = 0;
+    this.pcmView = undefined;
+  }
+
+  /**
+   * Reset synthesis state for a new playback pass. Reapply voice and key registers afterward.
+   * @returns {void}
+   */
+  reset() {
+    this.api.reset(this.handle);
+    this.#syncIrq();
+  }
+
+  /**
+   * Write one bus byte. Use the chip register protocol rather than a MIDI channel number.
+   * @param {number} offset Native bus address/data port offset.
+   * @param {number} data Byte value, 0..255.
+   * @returns {void}
+   */
+  write(offset, data) {
+    this.api.write(this.handle, offset, data);
+    if (typeof this.hooks.onWrite === "function") {
+      this.hooks.onWrite({ offset, data });
+    }
+    this.#syncIrq();
+  }
+
+  /**
+   * Read a chip bus/status value; not a saved copy of all written voice registers.
+   * @param {number} offset Native bus offset.
+   * @returns {number} Native read result.
+   */
+  read(offset) {
+    if (typeof this.api.read !== "function") {
+      throw new Error("This YM2608 runtime does not support read(offset). Rebuild or reload the generated wasm runtime.");
+    }
+    const value = this.api.read(this.handle, offset);
+    if (typeof this.hooks.onRead === "function") {
+      this.hooks.onRead({ offset, value });
+    }
+    this.#syncIrq();
+    return value;
+  }
+
+  /**
+   * Read the primary status byte.
+   * @returns {number} Status flags from the native core.
+   */
+  readStatus() {
+    if (typeof this.api.readStatus !== "function") {
+      return this.read(0);
+    }
+    const value = this.api.readStatus(this.handle);
+    if (typeof this.hooks.onRead === "function") {
+      this.hooks.onRead({ offset: 0, value });
+    }
+    this.#syncIrq();
+    return value;
+  }
+
+  /**
+   * Read the secondary status byte.
+   * @returns {number} Secondary status flags from the native core.
+   */
+  readStatusHi() {
+    if (typeof this.api.readStatusHi !== "function") {
+      return this.read(2);
+    }
+    const value = this.api.readStatusHi(this.handle);
+    if (typeof this.hooks.onRead === "function") {
+      this.hooks.onRead({ offset: 2, value });
+    }
+    this.#syncIrq();
+    return value;
+  }
+
+  /**
+   * Read the current native interrupt line state.
+   * @returns {boolean} True when IRQ is asserted. Requires a runtime with IRQ support.
+   */
+  getIrq() {
+    if (typeof this.api.getIrq !== "function") {
+      return false;
+    }
+    return this.api.getIrq(this.handle) !== 0;
+  }
+
+  /**
+   * Replace register/IRQ observers; omitted callbacks are removed.
+   * Callbacks execute synchronously. IRQ notifications are checked at API boundaries.
+   * @param {Object} [hooks={}] Optional callback functions.
+   * @param {function({offset:number,data:number}):void} [hooks.onWrite] Called after a bus write.
+   * @param {function({offset:number,value:number}):void} [hooks.onRead] Called after a read.
+   * @param {function(boolean):void} [hooks.onIrq] Called with current/changed IRQ state.
+   * @returns {void}
+   */
+  setHooks(hooks = {}) {
+    const { onWrite, onRead, onIrq } = hooks;
+    assertHook("onWrite", onWrite);
+    assertHook("onRead", onRead);
+    assertHook("onIrq", onIrq);
+    this.hooks = { onWrite, onRead, onIrq };
+    this.lastIrqState = undefined;
+    this.#syncIrq();
+  }
+
+  /**
+   * Return the native PCM rate for the requested clock; this does not resample audio.
+   * @param {number} [clock] Chip input frequency in Hz.
+   * @returns {number} Stereo frames per second.
+   */
+  sampleRate(clock = YM2608_CLOCK) {
+    return this.api.sampleRate(this.handle, clock);
+  }
+
+  /** @param {Uint8Array} bytes
+   * @param {number} [offset] */
+  loadAdpcmARom(bytes, offset = 0) {
+    if (!(bytes instanceof Uint8Array)) {
+      throw new Error("loadAdpcmARom(bytes) expects a Uint8Array");
+    }
+    if (!Number.isInteger(offset) || offset < 0 || offset > 0x2000 || bytes.length > 0x2000 - offset) {
+      throw new RangeError("YM2608 rhythm ROM range exceeds 8 KiB");
+    }
+    if (typeof this.api.loadAdpcmARom !== "function") {
+      throw new Error("This YM2608 runtime does not support loadAdpcmARom(bytes). Rebuild or reload the generated wasm runtime.");
+    }
+    if (bytes.length === 0) {
+      return;
+    }
+    const ptr = this.module._malloc(bytes.length);
+    if (!ptr) throw new Error("ADPCM allocation failed");
+    try {
+      this.module.HEAPU8.set(bytes, ptr);
+      this.api.loadAdpcmARom(this.handle, offset, ptr, bytes.length);
+    } finally {
+      this.module._free(ptr);
+    }
+  }
+
+  /** @param {Uint8Array} bytes
+   * @param {number} memorySize
+   * @param {number} [offset] */
+  loadAdpcmBMemory(bytes, offset = 0, memorySize = YM2608_ADPCM_B_MEMORY_SIZE) {
+    if (!(bytes instanceof Uint8Array)) {
+      throw new Error("loadAdpcmBMemory(bytes) expects a Uint8Array");
+    }
+    if (!Number.isInteger(memorySize) || memorySize < 0 || memorySize > YM2608_ADPCM_B_MEMORY_SIZE ||
+        !Number.isInteger(offset) || offset < 0 || offset > memorySize || bytes.length > memorySize - offset) {
+      throw new RangeError("YM2608 ADPCM-B data exceeds the sample memory range");
+    }
+    if (typeof this.api.loadAdpcmBMemory !== "function") {
+      throw new Error("This YM2608 runtime does not support ADPCM-B memory. Rebuild or reload the generated wasm runtime.");
+    }
+    if (bytes.length === 0) return;
+    const ptr = this.module._malloc(bytes.length);
+    if (!ptr) throw new Error("ADPCM allocation failed");
+    try {
+      this.module.HEAPU8.set(bytes, ptr);
+      this.api.loadAdpcmBMemory(this.handle, offset, ptr, bytes.length);
+    } finally {
+      this.module._free(ptr);
+    }
+  }
+
+  clearAdpcmBMemory() {
+    if (typeof this.api.clearAdpcmBMemory !== "function") {
+      throw new Error("This YM2608 runtime does not support ADPCM-B memory. Rebuild or reload the generated wasm runtime.");
+    }
+    this.api.clearAdpcmBMemory(this.handle);
+  }
+
+  /** @param {number} mask */
+  setSourceMuteMask(mask) {
+    if (!this.api.setSourceMuteMask) throw new Error("Reload the generated YM2608 WASM runtime to use source mute controls.");
+    this.api.setSourceMuteMask(this.handle, mask);
+  }
+
+  /** Set host software gain before combining the FM-side stereo bus and SSG.
+   * The FM-side bus includes Rhythm and ADPCM-B. Gains survive reset and state restore.
+   * @param {Ym2608OutputGainPatch} gains Partial linear gain multipliers, each 0..1024.
+   * @returns {Ym2608OutputGains} Accepted output gains.
+   */
+  setOutputGains(gains) {
+    if (!this.handle) throw new Error('YM2608 chip is disposed');
+    const next = normalizeYm2608OutputGains(gains,this.outputGains);
+    if (this.api.setOutputGains) {
+      if (this.api.setOutputGains(this.handle,next.fm,next.ssg) !== 1) throw new Error('YM2608 output gains were rejected by the native runtime');
+    } else if (next.fm !== 1 || next.ssg !== 1) {
+      throw new Error('Reload the generated YM2608 WASM runtime to use output gains.');
+    }
+    this.outputGains = next;
+    return this.getOutputGains();
+  }
+
+  /** @returns {Ym2608OutputGains} Detached linear output gain multipliers. */
+  getOutputGains() { return {...this.outputGains}; }
+
+  /** Set independent host gains for FM, SSG, Rhythm and ADPCM-B before mixing.
+   * This does not change the legacy two-bus output gains or chip registers.
+   * @param {Ym2608SourceGainPatch} gains Partial linear gain multipliers, each 0..1024.
+   * @returns {Ym2608SourceGains} Accepted source gains.
+   */
+  setSourceGains(gains) {
+    if (!this.handle) throw new Error('YM2608 chip is disposed');
+    const next = normalizeYm2608SourceGains(gains,this.sourceGains);
+    if (this.api.setSourceGains) {
+      if (this.api.setSourceGains(this.handle,next.fm,next.ssg,next.rhythm,next.adpcm) !== 1) throw new Error('YM2608 source gains were rejected by the native runtime');
+    } else if (Object.values(next).some(value => value !== 1)) {
+      throw new Error('Reload the generated YM2608 WASM runtime to use independent source gains.');
+    }
+    this.sourceGains = next;
+    return this.getSourceGains();
+  }
+
+  /** @returns {Ym2608SourceGains} Detached independent source gain multipliers. */
+  getSourceGains() { return {...this.sourceGains}; }
+
+  /**
+   * Generate PCM synchronously, advancing the chip by the requested number of frames.
+   * Returned arrays are copied from WASM memory and survive later generation/disposal.
+   * @param {number} frames Nonnegative integer stereo frame count.
+   * @returns {{left: Float32Array, right: Float32Array}} Owned PCM arrays at sampleRate().
+   */
+  generateStereo(frames) {
+    this.#ensureBuffers(frames);
+    this.api.generate(this.handle, this.leftPtr, this.rightPtr, frames);
+
+    const leftStart = this.leftPtr >> 2;
+    const rightStart = this.rightPtr >> 2;
+    const left = new Float32Array(frames);
+    const right = new Float32Array(frames);
+    left.set(this.module.HEAPF32.subarray(leftStart, leftStart + frames));
+    right.set(this.module.HEAPF32.subarray(rightStart, rightStart + frames));
+    this.#syncIrq();
+    return { left, right };
+  }
+
+  /**
+   * Reserve PCM capacity without advancing the chip (for realtime initialization).
+   * @param {number} frames Maximum expected stereo frame count.
+   * @returns {void}
+   */
+  reserveStereoFrames(frames) {
+    this.#ensureBuffers(frames);
+  }
+
+  /**
+   * Generate borrowed views of WASM PCM, reusing arrays and the result object.
+   * Read only the first `frames` entries; array length is reserved capacity.
+   * Consume immediately: generation, buffer growth, or disposal invalidates the data.
+   * Do not retain/mutate these views. Use generateStereo() for owned copies.
+   * @param {number} frames Nonnegative integer frame count, up to 16777216.
+   * @returns {{left: Float32Array, right: Float32Array}} Borrowed PCM views.
+   */
+  generateStereoView(frames) {
+    this.#ensureBuffers(frames);
+    this.api.generate(this.handle, this.leftPtr, this.rightPtr, frames);
+    this.#syncIrq();
+    const buffer = this.module.HEAPF32.buffer;
+    const view = this.pcmView;
+    if (!view || view.left.buffer !== buffer ||
+        view.left.byteOffset !== this.leftPtr || view.right.byteOffset !== this.rightPtr ||
+        view.left.length !== this.bufferFrames) {
+      this.pcmView = {
+        left: new Float32Array(buffer, this.leftPtr, this.bufferFrames),
+        right: new Float32Array(buffer, this.rightPtr, this.bufferFrames),
+      };
+    }
+    return this.pcmView;
+  }
+
+  /** @param {number} frames */
+  #ensureBuffers(frames) {
+    if (!Number.isInteger(frames) || frames < 0 || frames > 0x1000000) {
+      throw new RangeError("Invalid frame count");
+    }
+    if (!this.handle) throw new Error("YM2608 is disposed");
+    if (frames <= this.bufferFrames) {
+      return;
+    }
+
+    if (this.leftPtr) {
+      this.module._free(this.leftPtr);
+    }
+    if (this.rightPtr) {
+      this.module._free(this.rightPtr);
+    }
+
+    const byteLength = frames * Float32Array.BYTES_PER_ELEMENT;
+    this.leftPtr = this.module._malloc(byteLength);
+    this.rightPtr = this.module._malloc(byteLength);
+    this.bufferFrames = frames;
+  }
+
+  #syncIrq() {
+    if (typeof this.api.getIrq !== "function" || typeof this.hooks.onIrq !== "function") {
+      return;
+    }
+
+    const asserted = this.getIrq();
+    if (this.lastIrqState === asserted) {
+      return;
+    }
+
+    this.lastIrqState = asserted;
+    this.hooks.onIrq(asserted);
+  }
+}
+
+/**
+ * Convenience factory for Ym2608. Does not create an audio device.
+ * @param {function(Object): (Object|Promise<Object>)} moduleFactory Generated module factory.
+ * @param {Object} [moduleOptions] Emscripten loader settings.
+ * @returns {Promise<Ym2608>} Chip instance owned by the caller.
+ */
+export async function createYm2608(moduleFactory, moduleOptions) {
+  return Ym2608.create({ moduleFactory, moduleOptions });
+}
+
+function assertHook(name, value) {
+  if (value !== undefined && typeof value !== "function") {
+    throw new Error(`${name} must be a function when provided`);
+  }
+}
+
+function optionalCwrap(module, name, returnType, argTypes) {
+  const table = module.asm || module;
+  const exportedName = `_${name}`;
+  if (typeof table[exportedName] !== "function") {
+    return undefined;
+  }
+  return module.cwrap(name, returnType, argTypes);
+}

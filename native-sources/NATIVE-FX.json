@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "component": "native_audio_effect",
+  "inputs": [
+    {
+      "path": "code-effects/LICENSE",
+      "sourcePath": "LICENSE",
+      "bytes": 1519,
+      "sha256": "2d2e9213c170a9866c616fa85b6da993a6724e10befc61f468ed9bfb84c4691c"
+    },
+    {
+      "path": "code-effects/docs/native_audio_effect/README.md",
+      "sourcePath": "docs/native_audio_effect/README.md",
+      "bytes": 9954,
+      "sha256": "1fb5e082313b168319fbbf8e7170a9f1a12f725a0deac9b114b4d853571b000e"
+    },
+    {
+      "path": "code-effects/scripts/build_native_audio_effect.sh",
+      "sourcePath": "scripts/build_native_audio_effect.sh",
+      "bytes": 2183,
+      "sha256": "195f57fa21ea429411030232b753992556214f45c62588aa2ace7bceb231abe1"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/compressor.c",
+      "sourcePath": "tetorica_src/native/audio_effect/compressor.c",
+      "bytes": 2314,
+      "sha256": "6e3e2c7588f0be7f35378b6698340e7aea21cecce1cd6be7cb6ebe046b670784"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/compressor.h",
+      "sourcePath": "tetorica_src/native/audio_effect/compressor.h",
+      "bytes": 289,
+      "sha256": "981f36abf7fbf33be3de482a2200b539cbd6d562011018a9660976ae69c96c4c"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/eq.c",
+      "sourcePath": "tetorica_src/native/audio_effect/eq.c",
+      "bytes": 2546,
+      "sha256": "0ade21edfddf0aab6d3c6d145e9464ba1a03cc9e78f85a12ee0fa95e7e998d0f"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/extra_fx.c",
+      "sourcePath": "tetorica_src/native/audio_effect/extra_fx.c",
+      "bytes": 7536,
+      "sha256": "1b6cad91d18f3080bb921f39398312830b72b0775b47ebf34f80ffe2966577b3"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/extra_fx.h",
+      "sourcePath": "tetorica_src/native/audio_effect/extra_fx.h",
+      "bytes": 407,
+      "sha256": "1eb9d97ff152403f382878377e13710591d5cb8fb2297e1457e18220bf19b7a3"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/gain.c",
+      "sourcePath": "tetorica_src/native/audio_effect/gain.c",
+      "bytes": 2081,
+      "sha256": "1a769210e885c1f3a0c47dba745bcfa395eb5c6d9306ddcc2d5c101a88fde6a3"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/graph.c",
+      "sourcePath": "tetorica_src/native/audio_effect/graph.c",
+      "bytes": 3847,
+      "sha256": "8637dff231d3960961f043b1f2738d79264a6f5d8abe6de3f3029d15e7cd9f61"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/noise.c",
+      "sourcePath": "tetorica_src/native/audio_effect/noise.c",
+      "bytes": 4153,
+      "sha256": "b32e4f637782c4a9a35cfaf0c1134d68fa9977db75e4033e0d4fbc0738c11e71"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/noise_gate.c",
+      "sourcePath": "tetorica_src/native/audio_effect/noise_gate.c",
+      "bytes": 2821,
+      "sha256": "6fc3d87e6d0f0b418ab405c7f24163958e54c82e92b6ae58c524c66d86b24325"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/noise_gate.h",
+      "sourcePath": "tetorica_src/native/audio_effect/noise_gate.h",
+      "bytes": 298,
+      "sha256": "5258f6bed8e8a8e38b5a811008e6611712af75cb0887a63f98a34589447046e6"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/reverb.c",
+      "sourcePath": "tetorica_src/native/audio_effect/reverb.c",
+      "bytes": 2850,
+      "sha256": "983469a02979c04189b7e0ca6c3b1a3360f8ab8bb2cf34cfe1b3154a0b587d19"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/reverb.h",
+      "sourcePath": "tetorica_src/native/audio_effect/reverb.h",
+      "bytes": 212,
+      "sha256": "a1f465433a8e70fcb2c8ad8b8634c88fb44918051f68f3714b63810ae7c87c60"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/sample.c",
+      "sourcePath": "tetorica_src/native/audio_effect/sample.c",
+      "bytes": 5119,
+      "sha256": "9c6971c6ce67c97b639e036eb76edac7f3215544d7b978c6ce646a53a93fdb32"
+    }
+  ],
+  "generated": {
+    "native_audio_effect.wasm": {
+      "bytes": 48297,
+      "sha256": "d5183259003b3f7fdda5ba1f85e69c10687e95d13f5499fa2f5fbcf08d3de290"
+    }
+  },
+  "rebuildVerification": {
+    "byteExact": true,
+    "compiler": {
+      "command": "emcc",
+      "version": "emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.6-git\nCopyright (C) 2026 the Emscripten authors (see AUTHORS.txt)\nThis is free and open source software under the MIT license.\nThere is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+    },
+    "sourceFingerprint": "bae9b36e47ead28d73256e357c8ed0eb2967326284391d90e84f4c3b989e7adc",
+    "output": {
+      "bytes": 48297,
+      "sha256": "d5183259003b3f7fdda5ba1f85e69c10687e95d13f5499fa2f5fbcf08d3de290"
+    }
+  }
+}

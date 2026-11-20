@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "builds": [
+    {
+      "target": "aarch64-apple-darwin",
+      "productName": "Tetorica SMSGEAR Synth",
+      "identifier": "net.tetorica.synth-smsgear-ym2413",
+      "version": "0.0.1",
+      "app": "src-tauri/target/aarch64-apple-darwin/release/bundle/macos/Tetorica SMSGEAR Synth.app",
+      "architecture": "arm64",
+      "binarySha256": "072625a7f9a60c609d8aee75f4e0a074fcdbdbf36ed67536dc6919fe7aaaa595",
+      "latestDesktopAdaptersEmbedded": true,
+      "signed": false,
+      "sourceKitVerified": true
+    },
+    {
+      "target": "x86_64-apple-darwin",
+      "productName": "Tetorica SMSGEAR Synth",
+      "identifier": "net.tetorica.synth-smsgear-ym2413",
+      "version": "0.0.1",
+      "app": "src-tauri/target/x86_64-apple-darwin/release/bundle/macos/Tetorica SMSGEAR Synth.app",
+      "architecture": "x86_64",
+      "binarySha256": "7d046ba068d4f8cae6b075ba9995882506204f37babf094fc4e328609000b78b",
+      "latestDesktopAdaptersEmbedded": true,
+      "signed": false,
+      "sourceKitVerified": true
+    }
+  ]
+}

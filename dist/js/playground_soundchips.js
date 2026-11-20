@@ -1,0 +1,50 @@
+/** Per-runtime lookup cache. Creation and Stop disposal remain owned by the runtime. */
+/**
+ * Create a chip cache that coalesces concurrent requests and invalidates stopped generations.
+ * @returns Cached use and clear operations. use rejects unsupported chips/nonempty options;
+ * clear invalidates pending lookups but does not dispose resolved chips.
+ */
+export function createSoundChipRegistry() {
+  const entries = new Map();
+  let generation = 0;
+  return {
+    /** @template {{dispose?: () => void}} Chip
+     * @param {string} name Supported Playground chip name.
+     * @param {Record<string, never> | undefined} options Omit or pass an empty object.
+     * @param {(name: string) => Chip | PromiseLike<Chip>} resolve Chip factory owned by the runtime.
+     * @param {{evictOnDispose?: boolean}} [settings] Remove manually disposed extra clients from the cache.
+     * @returns {Promise<Chip>} Shared pending/resolved chip. */
+    use(name, options, resolve, {evictOnDispose = !['ym2612', 'ym2203', 'ym2610'].includes(name)} = {}) {
+      if (!['ym2612', 'ym2203', 'ym2610', 'ym2610b', 'rf5c164', 'ym2608', 'gameboy', 'segapsg', 'ym2151', 'pwm', 'nes', 'dx7', 'snes', 'spc', 'ps1', 'scsp', 'huc6280', 'pokey', 'sid', 'wonderswan', 'okim6258', 'ym3526','ym3812','y8950','ymf262','ym2413','ay8910'].includes(name)) {
+        return Promise.reject(new Error(`Unsupported useSoundChip name: ${String(name)}`));
+      }
+      if (options !== undefined && (!options || typeof options !== 'object' || Array.isArray(options) || Reflect.ownKeys(options).length)) {
+        return Promise.reject(new Error('useSoundChip options (including id) are not supported yet; omit options or use {}.'));
+      }
+      if (entries.has(name)) return entries.get(name);
+      const epoch = generation;
+      const pending = Promise.resolve().then(() => {
+        if (epoch !== generation) throw new Error('Run stopped');
+        return resolve(name);
+      }).then(chip => {
+        if (epoch !== generation) throw new Error('Run stopped');
+        // Additional clients expose dispose. Evict a manually disposed instance;
+        // the runtime retains responsibility for its audio device and Stop cleanup.
+        if (evictOnDispose && typeof chip.dispose === 'function') {
+          const dispose = chip.dispose.bind(chip);
+          chip.dispose = () => {
+            if (entries.get(name) === pending) entries.delete(name);
+            dispose();
+          };
+        }
+        return chip;
+      }).catch(error => {
+        if (entries.get(name) === pending) entries.delete(name);
+        throw error;
+      });
+      entries.set(name, pending);
+      return pending;
+    },
+    clear() { generation++; entries.clear(); },
+  };
+}

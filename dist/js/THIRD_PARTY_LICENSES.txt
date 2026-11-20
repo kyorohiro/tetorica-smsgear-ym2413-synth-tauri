@@ -1,0 +1,25 @@
+ymfm: BSD-3-Clause; see LICENSE.
+Saturn SCSP: experimental standalone BSD-3-Clause MAME port by ElSemi and R. Belmont; see licenses/mame-scsp/LICENSE and sources/SCSP.md.
+PlayStation SPU: experimental standalone BSD-3-Clause MAME port by pSXAuthor and R. Belmont; see licenses/mame-ps1-spu/LICENSE and sources/PS1-SPU.md for complete source and rebuilding. The source and build recipe come from the fixed SDK, where PS1 SPU is cataloged as a separate instrument.
+C64 SID: chips/m6581 6581 approximation (zlib) and optional MIT sidera 8580 Preview with BSD-3-Clause Tetorica hosts. See licenses/chips-m6581/, sources/SID.md and sources/SID8580.md for matching source kits and rebuild recipes. The 8580 kit retains Rust/MIT, C64/zlib and Tetorica/BSD notices, including third_party/sidera/toolchain-notices/ and third_party/sid8580-machine-toolchain-notices/ inside sources/sid8580-machine/.
+POKEY: BSD-3-Clause; see licenses/libvgm-pokey/ and sources/POKEY.md for the standalone adaptation, exact licensed upstream source, pinned provenance and rebuild recipe.
+CD-DA PCM: BSD-3-Clause; see licenses/tetorica-cdda/ and sources/CDDA.md for fixed SDK sources, provenance and standalone rebuilding.
+MSM5205 PCM and PC Engine ADPCM RAM helper: BSD-3-Clause; see licenses/tetorica-msm5205/ and sources/MSM5205.md for complete fixed SDK application-audio sources, attribution and standalone rebuilding.
+Sega PSG: original Tetorica implementation, BSD-3-Clause; see licenses/tetorica_sega_psg/ and sources/SegaPSG.md. Hardware reference: SMS Power! SN76489 documentation by Maxim and contributors.
+nuked-opn2: see licenses/nuked-opn2/LICENSE and README.md.
+mame-ay8910: see licenses/mame-ay8910/LICENSE and README.md.
+mame-gameboy: see licenses/mame-gameboy/LICENSE and README.md.
+mame-huc6280: see licenses/mame-huc6280/LICENSE and README.md.
+mame-wonderswan: see licenses/mame-wonderswan/LICENSE and README.md.
+mame-k051649: see licenses/mame-k051649/LICENSE and README.md.
+mame-okim6258: see licenses/mame-okim6258/LICENSE and README.md.
+mame-okim6295: see licenses/mame-okim6295/LICENSE and README.md.
+libvgm-msm5205: see licenses/libvgm-msm5205/LICENSE and README.md.
+mame-rf5c164: see licenses/mame-rf5c164/LICENSE and README.md.
+mame-segapcm: see licenses/mame-segapcm/LICENSE and README.md.
+mame-32x-pwm: see licenses/mame-32x-pwm/LICENSE and README.md.
+Nuked-OPN2 is LGPL-2.1-or-later; corresponding source and standalone recipe: sources/Nuked-OPN2.md. The MAME adaptations listed above are BSD-3-Clause.
+NES APU: JSNES (Apache-2.0), FDS: fixNES (MIT); see licenses/jsnes, licenses/fixnes-fds and licenses/tetorica-nes. The default WASM port and reproducible source are described in sources/NES-FDS.md.
+DX7: tetorica-msfa-dx7-wasm 0.3.1 / Google MSFA (Apache-2.0); see msfa_dx7/LICENSE, THIRD_PARTY_NOTICES.md and README.vendor.md.
+SPC700 / S-DSP: snes_spc (LGPL-2.1-or-later); see licenses/snes-spc and sources/SNES-SPC.md for corresponding source and rebuilding.
+No external instrument/sample ROMs are included.

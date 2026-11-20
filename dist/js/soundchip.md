@@ -1,0 +1,296 @@
+# Sound chip factories
+
+`createSoundChip` は既存の低レベルチップを初期化する入口です。
+音色の設定、Note On、スピーカー出力を追加するものではありません。
+
+```javascript
+import { createSoundChip } from './soundchip.js';
+const opm = await createSoundChip('ym2151');
+try {
+  // opm.write(...) でレジスタ設定後、opm.generateStereo(...) でPCM生成。
+} finally {
+  opm.dispose();
+}
+```
+
+対応名: `ay8910`, `y8950`, `ym2151`, `ym2203`, `ym2413`, `ym2608`,
+`ym2610b`, `ym2612`, `ym3438`, `ym3526`, `ym3812`, `ymf262`, `ymf276`,
+`ymf278b`, `ymf288`, `sid`。各ラッパーの機能・ROM要件はそのままです。
+
+Node.jsではローカルWASMを読み込み、ブラウザーでは生成済みモジュールの
+ローダーがWASMを取得します。Web AudioやDOMは使いません。
+ソースツリーでは `docs/generated/`、公開用 `docs/js/` では隣の `generated/`
+を既定の配置とします。別の配置ならディレクトリURLを指定してください。
+
+```javascript
+const chip = await createSoundChip('ymf262', {
+  assetBaseUrl: new URL('./assets/chips/', import.meta.url),
+});
+```
+
+`moduleFactory` を渡すと自動ロードを省略し、`moduleOptions` をそのまま渡します。
+`moduleOptions.wasmBinary` や `locateFile` でWASM読み込みを指定することもできます。
+
+### C64 SID
+
+`createSoundChip('sid', {model:'6581'})` は既存の`SidCore`、
+`model:'8580'` はPAL専用の`Sid8580Core` Previewを返します。既定は6581です。
+`clock`は生成時のclock Hz（既定985248）、`sampleRate`はPCM出力rateです。
+8580 Previewのclockは985248だけです。返された`id`は変更できません。
+
+```js
+import {createSoundChip} from './soundchip.js';
+import {SidSynth} from './sidsynth.js';
+
+const core = await createSoundChip('sid', {model:'6581',sampleRate:48000});
+const sid = new SidSynth({core});
+try {
+  sid.initialize();
+  sid.setVoice(0, {waveform:'triangle',attack:0,decay:2,sustain:12,release:4});
+  sid.noteOn(0, 'C4');
+  const pcm = core.render(24000); // mono Float32Array。スピーカーには接続しない。
+} finally {
+  sid.dispose(); // 借りているcore自体は破棄しない。
+  core.dispose();
+}
+```
+
+SIDのdirect APIは`writeRegister()`／`readRegister()`、`render()`／
+`renderInto()`、`reset()`／`getState()`です。`sampleRate`は数値propertyです。
+他chipの`generateStereo()`へ変換せず、既存coreのmono PCMを保持します。
+既定WASMはNodeではファイル、browserではfetchで取得します。配置変更には
+`assetBaseUrl`（generatedディレクトリ）か`wasmUrl`を指定し、明示バイトには
+`wasmBinary`か`moduleOptions.wasmBinary`を使えます。
+
+browserの`execution:'worklet'`も両modelに対応します。`model`／`clock`は
+endpointで確認でき、`request('writeRegister',[register,value])`／
+`request('readRegister',[register])`／`request('getState')`で操作します。
+`start()`で出力を接続し、`stop()`で切断、`dispose()`で解放します。
+生成だけではスピーカーへ接続せず、PCMはAudioContextのsample rateで生成します。
+Preset・3CH設定・Round robin・LegatoなどSynth固有の演奏helperは追加しません。
+
+## ゲームに必要なチップだけ同梱する
+
+便利な共通入口は動的importを含みます。配布物に何が含まれるかはバンドラー次第です。
+最小構成には、チップを一切importしない `soundchip_factory.js` を使ってください。
+
+```javascript
+import { createSoundChipFactory } from './soundchip_factory.js';
+import { Ym2151 } from './ym2151.js';
+import moduleFactory from './generated/ym2151_wasm.js';
+
+const createSoundChip = createSoundChipFactory({
+  ym2151: (options = {}) => Ym2151.create({ moduleFactory, ...options }),
+});
+const opm = await createSoundChip('ym2151');
+// 使用後に opm.dispose()
+```
+
+この例のWASMは `ym2151_wasm.js` と同じ場所に置きます。登録したローダーは
+生成要求時だけ実行されます。複数回呼ぶと独立したチップを生成し、共有しません。
+この登録方式にはNode.js固有の依存もありません。Workerでは必要に応じて
+WASMバイナリーとmoduleFactoryをローダーへ注入できます。
+
+## チップ別の再生 Transport（0.2.6）
+
+MegaSynth はゲーム埋め込み向けの統合 API として維持する。
+基本のチップ例は `createSoundChip → Transport → Synth` で構成する。
+
+```js
+import {createSoundChip} from 'tetorica-fm2612';
+import {YM2612Synth, YM2612WorkletTransport} from 'tetorica-fm2612/ym2612synth.js';
+import {FM_PRESETS} from 'tetorica-fm2612/megasynth-fm-presets.js';
+const chip = await createSoundChip('ym2612', {execution: 'worklet'});
+const transport = new YM2612WorkletTransport(chip);
+const fm = new YM2612Synth({transport});
+try {
+  fm.setPreset(0, FM_PRESETS.sine);
+  await transport.start();
+  fm.noteOn(0, 4, 553);
+  await new Promise(resolve => setTimeout(resolve, 600));
+  fm.noteOff(0);
+  await new Promise(resolve => setTimeout(resolve, 200));
+} finally {await transport.close(); await chip.dispose();}
+```
+
+Web の `execution: 'worklet'` は、WASM を Worklet 内で作る endpoint を返す。
+生成済みの Main のチップをコピーしたり移動したりしない。
+この入口の対応名は `ym2612`、`ym2608`、`gameboy`、`segapsg`、`ym2151`。
+OPL系の `ym3526`、`ym3812`、`y8950`、`ymf262` もWorklet出力に対応します。
+音源操作は Main の Synth で行い、Transport がレジスタ命令を送る。
+通常の Worker は作らない。利用者が演奏ロジックを Worker に分ける場合、
+Main が初期化した endpoint の `createTransportPort()` で追加の MessagePort を作って渡し、その Worker に Synth / Transport を置ける。
+Main の制御用 port は保持されるため、演奏ロジックを Worker に移しても Main で開始・終了を管理できる。
+既存の AudioWorkletNode を受け取る WorkletTransport の入口も維持する。
+WASM の独自 factory 関数を Worklet に送ることはできないため、このモードは package の factory を使う。
+
+`execution` を省略した `createSoundChip()` は従来どおり呼び出し元で WASM を作る。
+Game Boy と Genesis PSG も `createSoundChip('gameboy')` / `createSoundChip('segapsg')` で生成できる。
+
+NES＋FDSも`await createSoundChip('nes', {fds:true})`でWASMを生成する。
+Native版と共通のC++コアを使い、Direct／Workletとも既存の`NesApuSynth`とTransportを使える。
+WASMの読込み失敗はエラーにし、JS音源への自動切替は行わない。
+同期的な`new NesApu(...)`は従来のJS音源として互換性・比較用に残す。
+通常の非同期APIを使う場合、CPUプログラム・ゲームROM・音色ROMは不要。
+
+```js
+import {YM2612AudifyTransport} from 'tetorica-fm2612/node/transports';
+const chip = await createSoundChip('ym2612');
+const transport = new YM2612AudifyTransport(chip);
+const fm = new YM2612Synth({transport});
+try {
+  fm.setPreset(0, FM_PRESETS.sine);
+  await transport.start();
+  fm.noteOn(0, 4, 553);
+  await new Promise(resolve => setTimeout(resolve, 600));
+  fm.noteOff(0);
+  await new Promise(resolve => setTimeout(resolve, 200));
+} finally {await transport.close(); chip.dispose();}
+```
+
+AudifyTransport は chip を借りる。Synth / チップの PCM 生成は呼び出し元のスレッドで行い、
+デバイス管理だけを内部 Node Worker に隔離する。デバイス消費の通知で PCM を補充する。
+停止・終了にはフェードを使う。`stop()` の後は再開でき、`close()` の後は新しい Transport を使う。
+chip の `dispose()` は利用者の責任で、Transport を閉じてから行う。
+`YM2608AudifyTransport`、`GameboyAudifyTransport`、`SegaPSGAudifyTransport`、`YM2151AudifyTransport` も同じ出力 lifecycle を持つ。
+対応する Web の Gameboy / SegaPSG / YM2151 WorkletTransport は `chip_worklet_transport.js` にある。
+
+DirectTransport は、手元で `generateStereo()` により PCM を生成し、WAV 保存や利用者の出力へ渡す用途に使う。
+examples の `transport/direct/01-single-note` に PCM 生成・連結・Web 再生・WAV 保存をすべて記述する。
+これらの追加入口は npm 0.2.6 以降で利用できる。
+
+## OPL系の高級API
+
+`opl_synth.js` の `OPLSynth` / `OPLDirectTransport` は、YM3526・YM3812・
+Y8950のFM・YMF262を共通の音名／音色APIで扱います。
+`initialize()` で初期化し、`setPreset(ch, OPL_PRESETS.sine)`、
+`noteOn(ch, 'A4')`、`noteOff(ch)`、`setOperator(ch, op, {...})` を使います。
+チャンネルは0始まりで9CH（OPL3は18CH）、オペレーターはmodulator/carrierの0・1です。
+OPL3の4-opペアはprimaryの0〜2・9〜11で有効化し、0〜3のオペレーターを操作します。
+ペア相手のCHはprimaryが所有し、独立発音には使えません。
+
+`setRhythm()` はドラムのキーとリズムモード、`setLFO()` はAM/PM depthを操作します。
+YM3526とY8950はサイン波のみ、YM3812は4波形、YMF262は8波形です。
+ステレオの左右選択はYMF262のみ。monoの3チップは同じ音を左右へ出します。
+Y8950のADPCM高級APIは含みません。YM2413/OPLLは専用APIで扱います。
+
+Playgroundには4チップそれぞれのmodeがあり、標準音源は `opl` です。
+`useSoundChip()` は一致する主音源を借り、`createSoundChip()` は独立音源を作ります。
+Operatorsの音色調整・試聴とKeyboardは同じチップ／CHを操作します。
+
+## Master System / YM2413 OPLL
+
+Master System modeはmono Sega PSG (`psg`) とYM2413 (`opll`) を同時に用意します。
+音源ごとにMixerとKeyboardのCHを選べます。Game Gearの構成はstereo Sega PSGです。
+
+`opll.setInstrument(ch, 3, 4)` で内蔵音色3・attenuation 4を選び、
+`opll.noteOn(ch, 'C4')` / `noteOff(ch)` で演奏します。音色1〜15は内蔵音色です。
+音色0は1組だけの共有ユーザー音色で、`setUserPatch(OPLL_USER_PRESETS.sine)` や
+`setUserOperator()` の変更は音色0を使う全CHへ反映されます。
+キャリアの音量はCHごとのattenuationで設定し、共有パッチにキャリアTLはありません。
+9CHメロディーと6CHメロディー＋5リズムを切り替えられます。
+Rhythm音量とCH6〜8の音色・音量は同じレジスタを使います。
+
+モジュールの高級APIは `ym2413synth.js` の `YM2413Synth` / `YM2413DirectTransport` です。
+`YM2413_INSTRUMENTS` は音色名、`YM2413_USER_PRESETS` は自作共有パッチです。
+Playgroundでは同じ一覧を `OPLL_INSTRUMENTS` / `OPLL_USER_PRESETS` として使えます。
+
+## MSX / AY-3-8910 PSG
+
+MSX modeは `ay`（AY-3-8910）と `opll`（YM2413 / MSX-MUSIC）を用意します。
+MSX Audio modeは `opl`（Y8950 / MSX-AUDIOのFM）も同じ出力へ追加します。
+音源ごとにMixerとKeyboardの物理CHを選べます。
+Y8950は既存のFM APIを使い、ADPCMの高級APIは含みません。
+
+`ay.tone(0, {note:'A4', volume:9})` / `ay.keyOff(0)` で演奏します。
+AYの音量は0が無音、15が最大です。3CHのそれぞれでtoneとnoiseを混ぜられ、
+noiseのperiodとhardware envelopeはチップ全体で共有します。
+`setMixer(ch,{tone,noise})` は他CHとI/Oビットを保持し、
+`keyOff()` / `keyOn()` は設定済みの音量とtone/noiseを維持します。
+`setEnvelope({period})` は周期だけを更新し、`setEnvelope({shape})` は共有envelopeを再開始します。
+
+埋め込みは `Playground({chip:'msx'})` / `Playground({chip:'msx-audio'})` で選びます。
+`useSoundChip('ay8910'|'ym2413')` は両modeで主音源を借ります。
+`useSoundChip('y8950')` はMSX Audioでは主音源を借り、MSXでは独立音源を追加します。
+`createSoundChip()` は独立音源を作ります。
+単体APIは `ay8910synth.js` の `AY8910Synth` / `AY8910DirectTransport` /
+`AY8910WorkletTransport` です。
+
+## 32X PWM 共通コア（0.2.7）
+
+`createSoundChip('pwm', {clock: 23011361, sampleRate: 48000})` は MAME 由来の
+FIFO・タイマー処理を持つ JavaScript コアを生成する。WASM・音声デバイスは不要。
+レジスタ0〜4を `writeRegister(register, value)` で設定し、`generateStereo(frames)` で進める。
+`reset` / `read` / `saveState` / `loadState` / `dispose` に対応。
+
+npm 0.2.7 以降で利用できる。共通Worklet / Audify Transport、
+MegaSynth / Playground / Node の入口を追加済み。利用方法は以下を参照。
+VGM比較には `pwmModel: 'mame'` を使う。VGM側はcycle基準の振幅に揃える。
+元の固定DAC換算を使う場合は `pwmOutputMode: 'dac'`。コア単体の既定はDAC換算、Analyzer／CLIのVGM再生の既定はMAME由来方式とcycle基準の振幅。
+従来方式は `pwmModel: legacy` で選べる。
+詳しくは `docs/issues/pwm32x_01.md` と `docs/demos/32x-pwm-compare.html` を参照。
+
+### 32X PWM runtime (0.2.7)
+
+The MAME-derived core is now available in MegaSynth (`new MegaSynth({mega32X: true})` / `synth.pwm` after `start()`), MegaSynthNode (`mega32X: true`) and Playground (`await useSoundChip('pwm')`).
+Browser synthesis runs in AudioWorklet; MegaSynthNode generates it in its audio Worker. `scheduleWrites([{frame, register, value}, ...])` uses output-frame offsets relative to receipt of the batch. `getState().sampleRate` gives the units; these are not VGM 44,100 Hz offsets.
+
+Standalone browser output:
+
+```js
+import {createSoundChip} from 'tetorica-fm2612';
+import {PWM32XWorkletTransport} from 'tetorica-fm2612/pwm32x_transport.js';
+const chip = await createSoundChip('pwm', {execution: 'worklet'});
+const transport = new PWM32XWorkletTransport(chip);
+await transport.write(0, 5);
+await transport.write(1, 1047);
+await transport.write(4, 700);
+await transport.start();
+// await transport.close() when finished.
+```
+
+The runtime wrappers use `duty` output with core gain 1; low-level direct `createSoundChip('pwm')` keeps raw `dac` gain .4. The Worklet endpoint's `gain` controls output volume (default .25).
+For standalone Node playback, use `PWM32XAudifyTransport` from `tetorica-fm2612/node/transports`; it accepts the direct factory chip, wraps the same frame scheduler and borrows rather than disposes that chip. `PWM32XDirectTransport` generates PCM for a consumer-owned output or WAV export.
+These APIs are available from npm 0.2.7. A PCM `loadSample`/`play` facade is not included; register writes and scheduling are available.
+
+## 共通出力ミキサー
+
+`execution: 'worklet'` では `SoundChipMixer` を指定でき、返されたendpointの
+`chip.mixer` / `chip.id` からも設定できます。省略時はendpoint専用のミキサーです。
+
+```js
+import {createSoundChip, SoundChipMixer} from './soundchip.js';
+const mixer = new SoundChipMixer();
+const chip = await createSoundChip('gameboy', {
+  execution: 'worklet', mixer,
+});
+mixer.set(chip.id, {volume: 0.28, pan: 0, muted: false});
+// レジスタ設定後に await chip.start()。使用後に await chip.dispose()。
+```
+
+`volume` は0〜2の倍率、`pan` は-1〜1のステレオバランスです。
+Game Boyは28%、他は100%が初期値。`reset(id)`もその値に戻ります。
+既存のendpointの`gain`（既定0.25）とは別の倍率です。複数endpointを同じ
+ミキサーに登録する場合は、異なるIDと共通のAudioContext／出力先を指定します。
+`dispose()`で当該登録を解除し、ほかのチップは維持します。
+直生成モードは生のPCMを保ち、出力ミキサー指定はWorklet専用です。
+MegaSynthの`synth.mixer`、playgroundの`mixer`／`pg.mixer`も同じ設定項目を使います。
+playgroundのWorkerでは各操作を`await`してください。
+
+`solo: true` は複数音源を同時に選択できます。Solo対象外の出力を抑えますが、
+手動の`muted`は変更しません。`list()`の`effectiveMuted`で実際の抑制状態を確認できます。
+標準音源や明示IDの設定は、同じMixerへの再接続時に復元します。
+自動IDの設定を別の新しい音源へ引き継ぐことはありません。
+
+ホスト側の`subscribe(listener)`は一覧・設定変更を通知します（初期値は`list()`）。
+`subscribeMeters(listener)`は`[{id, left, right}]`のステレオピークを約15Hzで通知します。
+計測位置は音源別ゲインの後、共通FX・Masterの前です。画面を隠すときに購読解除すると、
+最後の購読解除時に専用の計測・通知を停止します。これらの購読はホスト側専用で、
+Playground Workerの公開Mixer APIには含みません。
+
+
+IDの指定は省略できます。`createSoundChip`で生成したDirect／Workletのどちらも
+`chip.id`から取得できます。自動IDは生成要求時に連番で確保し、同時初期化でも
+重複しません。IDは生成後に変更できません。手動の`{id: 'gb1'}`も利用できます。
+playgroundの`createSoundChip`／`useSoundChip`でも返されたオブジェクトの`.id`を
+`await mixer.set(chip.id, {volume: 0.3})`へ渡せます。

@@ -1,0 +1,381 @@
+{
+  "schemaVersion": 1,
+  "component": "smsgear-native-sources",
+  "files": [
+    {
+      "path": "code-effects/docs/native_audio_effect/README.md",
+      "bytes": 9954,
+      "sha256": "1fb5e082313b168319fbbf8e7170a9f1a12f725a0deac9b114b4d853571b000e"
+    },
+    {
+      "path": "code-effects/LICENSE",
+      "bytes": 1519,
+      "sha256": "2d2e9213c170a9866c616fa85b6da993a6724e10befc61f468ed9bfb84c4691c"
+    },
+    {
+      "path": "code-effects/scripts/build_native_audio_effect.sh",
+      "bytes": 2183,
+      "sha256": "195f57fa21ea429411030232b753992556214f45c62588aa2ace7bceb231abe1"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/compressor.c",
+      "bytes": 2314,
+      "sha256": "6e3e2c7588f0be7f35378b6698340e7aea21cecce1cd6be7cb6ebe046b670784"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/compressor.h",
+      "bytes": 289,
+      "sha256": "981f36abf7fbf33be3de482a2200b539cbd6d562011018a9660976ae69c96c4c"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/eq.c",
+      "bytes": 2546,
+      "sha256": "0ade21edfddf0aab6d3c6d145e9464ba1a03cc9e78f85a12ee0fa95e7e998d0f"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/extra_fx.c",
+      "bytes": 7536,
+      "sha256": "1b6cad91d18f3080bb921f39398312830b72b0775b47ebf34f80ffe2966577b3"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/extra_fx.h",
+      "bytes": 407,
+      "sha256": "1eb9d97ff152403f382878377e13710591d5cb8fb2297e1457e18220bf19b7a3"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/gain.c",
+      "bytes": 2081,
+      "sha256": "1a769210e885c1f3a0c47dba745bcfa395eb5c6d9306ddcc2d5c101a88fde6a3"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/graph.c",
+      "bytes": 3847,
+      "sha256": "8637dff231d3960961f043b1f2738d79264a6f5d8abe6de3f3029d15e7cd9f61"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/noise_gate.c",
+      "bytes": 2821,
+      "sha256": "6fc3d87e6d0f0b418ab405c7f24163958e54c82e92b6ae58c524c66d86b24325"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/noise_gate.h",
+      "bytes": 298,
+      "sha256": "5258f6bed8e8a8e38b5a811008e6611712af75cb0887a63f98a34589447046e6"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/noise.c",
+      "bytes": 4153,
+      "sha256": "b32e4f637782c4a9a35cfaf0c1134d68fa9977db75e4033e0d4fbc0738c11e71"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/reverb.c",
+      "bytes": 2850,
+      "sha256": "983469a02979c04189b7e0ca6c3b1a3360f8ab8bb2cf34cfe1b3154a0b587d19"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/reverb.h",
+      "bytes": 212,
+      "sha256": "a1f465433a8e70fcb2c8ad8b8634c88fb44918051f68f3714b63810ae7c87c60"
+    },
+    {
+      "path": "code-effects/tetorica_src/native/audio_effect/sample.c",
+      "bytes": 5119,
+      "sha256": "9c6971c6ce67c97b639e036eb76edac7f3215544d7b978c6ce646a53a93fdb32"
+    },
+    {
+      "path": "NATIVE-FX.json",
+      "bytes": 4877,
+      "sha256": "3a7f43c29861b18d08f3ffbb13ae3c73145cb8754bd5013cdb64c66830bacebe"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3070,
+      "sha256": "bef5f3d2ab6c1aced8ae00b189d5121a91cd02769e72e8548e886c5a6b4b21e4"
+    },
+    {
+      "path": "segapsg-sdk/catalog/source_inventory.json",
+      "bytes": 157268,
+      "sha256": "fc055c2b3445afd9c102f9a6e750a480dc86eab3d19ebba60edb7a862f79b2c3"
+    },
+    {
+      "path": "segapsg-sdk/docs/chip-differences.md",
+      "bytes": 55132,
+      "sha256": "1fd85dd66b785fe865f5aad83093e21c8bc21e19c7c2cc292f4341bbee5569df"
+    },
+    {
+      "path": "segapsg-sdk/LICENSE",
+      "bytes": 1517,
+      "sha256": "d49c2f05a09d2d648c05a5af92240a5dc4059830bc29afbb8919c6d1ba76bf91"
+    },
+    {
+      "path": "segapsg-sdk/RELEASE-MANIFEST.json",
+      "bytes": 73659,
+      "sha256": "83c0adec744e8ddd04cbf733c6e83460bc5ff69eff39d7d772f4df454ca5f1cf"
+    },
+    {
+      "path": "segapsg-sdk/scripts/build_segapsg_wasm.sh",
+      "bytes": 891,
+      "sha256": "9fb197e92a6993bb43c24aa75f16209f5e5a6144a6821cfb58340b742db2dc3f"
+    },
+    {
+      "path": "segapsg-sdk/scripts/build-wasm.sh",
+      "bytes": 1696,
+      "sha256": "caf6bd1688d21b48cf5c633aac9aa9398ad727b8b5445fca7aa37718d7dca33f"
+    },
+    {
+      "path": "segapsg-sdk/scripts/record_wasm_build.mjs",
+      "bytes": 2006,
+      "sha256": "8728a4b3f31e78db4410ab38d36bff72bfd5cd7bbd9c6f6fdb7dad1d53fe0dbf"
+    },
+    {
+      "path": "segapsg-sdk/sdk.json",
+      "bytes": 305,
+      "sha256": "48b53d9cfee9ee7f8f9c6501fce6edfd5c530bd1e9878c8523285d4a7aaac2cf"
+    },
+    {
+      "path": "segapsg-sdk/soundchip-sdk.json",
+      "bytes": 1845,
+      "sha256": "b2c97fa6b743d2b3e55493bb2ae6a2f189db2df566194b94b5802f6bdf05f1bc"
+    },
+    {
+      "path": "segapsg-sdk/vendor/tetorica_sega_psg/LICENSE",
+      "bytes": 1517,
+      "sha256": "d49c2f05a09d2d648c05a5af92240a5dc4059830bc29afbb8919c6d1ba76bf91"
+    },
+    {
+      "path": "segapsg-sdk/vendor/tetorica_sega_psg/README.md",
+      "bytes": 1912,
+      "sha256": "9536875b83eac226b00d6e183a1040db9903a0a118b093183a7edd02a7c2e38e"
+    },
+    {
+      "path": "segapsg-sdk/vendor/tetorica_sega_psg/segapsg.cpp",
+      "bytes": 7819,
+      "sha256": "05efbf3f6ad854ec64482afab29e016674d28505afc69e01058b1a634a27af3e"
+    },
+    {
+      "path": "segapsg-sdk/vendor/tetorica_sega_psg/segapsg.h",
+      "bytes": 2156,
+      "sha256": "123143939d5d260b9670119d098b48a836a99f74e3b9458c888242c15278242e"
+    },
+    {
+      "path": "segapsg-sdk/vendor/ymfm/chip_state.h",
+      "bytes": 521,
+      "sha256": "ecf7cd301fc1c790af663cedfbbccd3f7403392b459baaf82e2581ee652816b1"
+    },
+    {
+      "path": "segapsg-sdk/wasm/segapsg_wasm.cpp",
+      "bytes": 1392,
+      "sha256": "4ce18ea3f2167d6c0b81abc809948bd21f7a540fbe6aa50ef6f5db1961c97e8e"
+    },
+    {
+      "path": "SEGAPSG.json",
+      "bytes": 6765,
+      "sha256": "c7317a3228a157c374a82fa1d0665a95cc39fd14e6cd39f582a14a7697594149"
+    },
+    {
+      "path": "ym2413-sdk/catalog/source_inventory.json",
+      "bytes": 157268,
+      "sha256": "fc055c2b3445afd9c102f9a6e750a480dc86eab3d19ebba60edb7a862f79b2c3"
+    },
+    {
+      "path": "ym2413-sdk/docs/chip-differences.md",
+      "bytes": 55132,
+      "sha256": "1fd85dd66b785fe865f5aad83093e21c8bc21e19c7c2cc292f4341bbee5569df"
+    },
+    {
+      "path": "ym2413-sdk/LICENSE",
+      "bytes": 1517,
+      "sha256": "d49c2f05a09d2d648c05a5af92240a5dc4059830bc29afbb8919c6d1ba76bf91"
+    },
+    {
+      "path": "ym2413-sdk/RELEASE-MANIFEST.json",
+      "bytes": 73659,
+      "sha256": "83c0adec744e8ddd04cbf733c6e83460bc5ff69eff39d7d772f4df454ca5f1cf"
+    },
+    {
+      "path": "ym2413-sdk/scripts/build_ym2413_wasm.sh",
+      "bytes": 1109,
+      "sha256": "d298b2ca4bbbee2a83d207904935671eb7e7360edd6156d325db14b631313408"
+    },
+    {
+      "path": "ym2413-sdk/scripts/build-wasm.sh",
+      "bytes": 1696,
+      "sha256": "caf6bd1688d21b48cf5c633aac9aa9398ad727b8b5445fca7aa37718d7dca33f"
+    },
+    {
+      "path": "ym2413-sdk/scripts/record_wasm_build.mjs",
+      "bytes": 2006,
+      "sha256": "8728a4b3f31e78db4410ab38d36bff72bfd5cd7bbd9c6f6fdb7dad1d53fe0dbf"
+    },
+    {
+      "path": "ym2413-sdk/sdk.json",
+      "bytes": 305,
+      "sha256": "48b53d9cfee9ee7f8f9c6501fce6edfd5c530bd1e9878c8523285d4a7aaac2cf"
+    },
+    {
+      "path": "ym2413-sdk/soundchip-sdk.json",
+      "bytes": 1845,
+      "sha256": "b2c97fa6b743d2b3e55493bb2ae6a2f189db2df566194b94b5802f6bdf05f1bc"
+    },
+    {
+      "path": "ym2413-sdk/vendor/tetorica_sega_psg/LICENSE",
+      "bytes": 1517,
+      "sha256": "d49c2f05a09d2d648c05a5af92240a5dc4059830bc29afbb8919c6d1ba76bf91"
+    },
+    {
+      "path": "ym2413-sdk/vendor/tetorica_sega_psg/README.md",
+      "bytes": 1912,
+      "sha256": "9536875b83eac226b00d6e183a1040db9903a0a118b093183a7edd02a7c2e38e"
+    },
+    {
+      "path": "ym2413-sdk/vendor/tetorica_sega_psg/segapsg.cpp",
+      "bytes": 7819,
+      "sha256": "05efbf3f6ad854ec64482afab29e016674d28505afc69e01058b1a634a27af3e"
+    },
+    {
+      "path": "ym2413-sdk/vendor/tetorica_sega_psg/segapsg.h",
+      "bytes": 2156,
+      "sha256": "123143939d5d260b9670119d098b48a836a99f74e3b9458c888242c15278242e"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/chip_state.h",
+      "bytes": 521,
+      "sha256": "ecf7cd301fc1c790af663cedfbbccd3f7403392b459baaf82e2581ee652816b1"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/LICENSE",
+      "bytes": 1519,
+      "sha256": "2d2e9213c170a9866c616fa85b6da993a6724e10befc61f468ed9bfb84c4691c"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_adpcm.cpp",
+      "bytes": 22040,
+      "sha256": "74e5ded129ea7e532112e5b637d0a7bd4e127fd83331f1fac32011723051d4e0"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_adpcm.h",
+      "bytes": 13752,
+      "sha256": "5933691971493b853a9be443f6e6fd74f63869aa21225f66dd89fc20de20914d"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_fm.h",
+      "bytes": 17705,
+      "sha256": "1b27bfb7fa4963d7c54cb06fd9bf659450362d8ed496c6af7d487b068cac45c9"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_fm.ipp",
+      "bytes": 59507,
+      "sha256": "aaf9e663d706aa4d5df828bb97b71a7ba75aea77ae9636cd07edb3754aa2eae6"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_misc.cpp",
+      "bytes": 4435,
+      "sha256": "a2113ec915bf55e23169d9524d9db93d6589f9b2aa000daeb495ff839b6282d9"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_misc.h",
+      "bytes": 3077,
+      "sha256": "90739bd270a7b8b035275689e0f61ad4f8e0b9bcfd3f203816f97d54fe539b9d"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_opl.cpp",
+      "bytes": 67501,
+      "sha256": "6f0c68b4d7126f63231b889e12489732088d129c99aa4aa61a1d2d085bc1f501"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_opl.h",
+      "bytes": 33768,
+      "sha256": "6760e0fd1678439d4eda8bb98e1a8af30b17ba6a00b9f6e7a6c150689e9c42ce"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_opm.cpp",
+      "bytes": 17474,
+      "sha256": "ecb9262d2294ca241e536cfefb1b8196a565036af0047867761778b48fb86940"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_opm.h",
+      "bytes": 12759,
+      "sha256": "19cf16d26f39c3112e3e9a3a31583253bce39e51420888fa8318094a43ab7196"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_opn.cpp",
+      "bytes": 68238,
+      "sha256": "0babc16706b0039ea5e515e8672373ad0b567d93b3cdd58d18af664e179888f2"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_opn.h",
+      "bytes": 28892,
+      "sha256": "b918c6eeb7fa2b45ced97c58609baa4b54daedb917c8a73303710661fb786b39"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_opq.cpp",
+      "bytes": 15749,
+      "sha256": "3c02b56e89fd8f07df0460b0795809cc1cd9d69a748bbc4f27861a9c1df39fde"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_opq.h",
+      "bytes": 11258,
+      "sha256": "d2502d688f98004172b2b74065bd3a6a88dd517341ef14e90e2d8f936b02260b"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_opx.h",
+      "bytes": 12535,
+      "sha256": "8264cafdb86e2e635e99bdc7cca712e5354a93008f50ce63c013a9cf822fe02b"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_opz.cpp",
+      "bytes": 28628,
+      "sha256": "9df7d0abc85beb49c1f54597b0d05058fd4d06cad970e4bee3fff05fc520d273"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_opz.h",
+      "bytes": 14377,
+      "sha256": "448eaebae814c8c398d708903ca1981a2724dbdbb0a51de949bb0b8a3832d9e6"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_pcm.cpp",
+      "bytes": 21684,
+      "sha256": "3099d770b876dcdcb8a4c15df48fcc3475f22eca5a144b66581bfa7ebbf499ab"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_pcm.h",
+      "bytes": 12880,
+      "sha256": "d738b45f9406da413d29334ec062f217c42811af68ffa599ae4a2dc839cc2200"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_ssg.cpp",
+      "bytes": 8421,
+      "sha256": "73a3028a77f13f3769b7705079659eb8325431a67b8164ded25e12f324f42bfd"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm_ssg.h",
+      "bytes": 7752,
+      "sha256": "27966b0887fe98f2d06a96be2776c911107e2f2a13a64f9a349e1ffc19cf7584"
+    },
+    {
+      "path": "ym2413-sdk/vendor/ymfm/ymfm.h",
+      "bytes": 18554,
+      "sha256": "f5ab6fed63c8669abab8403e0e93132e1dad0ae4d8e4954e7836ab9e5b228405"
+    },
+    {
+      "path": "ym2413-sdk/wasm/opn_state.h",
+      "bytes": 2974,
+      "sha256": "fbddfeef9d1f8413f97949d5b5602296fcd3f59ae837c1561c5d03e1d17fc8b0"
+    },
+    {
+      "path": "ym2413-sdk/wasm/ym2413_wasm.cpp",
+      "bytes": 2607,
+      "sha256": "b51991f39ef90ccda9c0808014162da563e7f772d491cf138050b11e433c52a4"
+    },
+    {
+      "path": "ym2413-sdk/wasm/ymfm_wasm_interface.h",
+      "bytes": 1719,
+      "sha256": "533cb78ac8b79d48768abc5703ed03c814da22fa81358b2b65af1bbd2fe3735f"
+    },
+    {
+      "path": "YM2413.json",
+      "bytes": 14997,
+      "sha256": "607c41b6fb173879677323a4b86ca7fff9bfba9dbe32cc7df1c4dd37cf67465b"
+    }
+  ]
+}
