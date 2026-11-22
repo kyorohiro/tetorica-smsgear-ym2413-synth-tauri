@@ -1,4 +1,4 @@
-# Tetorica SMSGEAR Synth dev
+# Tetorica SMSGEAR Synth 0.100.1
 
 Serve this directory over HTTP and open index.html. PSG is primary, YM2413 is optional FM. No game data is bundled.
 

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
-import { SegaPSGSynth } from "./segapsgsynth.js";
-import { SEGAPSG_CLOCK } from "./segapsg.js";
+import { SegaPSGSynth } from "./segapsgsynth.js?v=audio-numeric-bindings-1";
+import { SEGAPSG_CLOCK } from "./segapsg.js?v=audio-numeric-bindings-1";
 
 /** Register-only authoring calls supported by the PSG operation recorder.
  * Validation and command-byte conversion remain in SegaPSGSynth. */
@@ -12,6 +12,7 @@ const arity = Object.freeze({
 	tone: [2, 2],
 	keyOn: [1, 1],
 	keyOff: [1, 1],
+	noteOff: [1, 1],
 	off: [1, 1],
 	setAttenuation: [2, 2],
 	setNoise: [0, 1],

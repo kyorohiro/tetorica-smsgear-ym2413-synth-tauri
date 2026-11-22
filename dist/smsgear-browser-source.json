@@ -33,6 +33,10 @@
     "docs/js/nes_apu_vendor/channel-triangle.js",
     "docs/js/nes_apu_vendor/index.js",
     "docs/js/nes_apu_vendor/utils.js",
+    "docs/js/nes_operation_state.js",
+    "docs/js/nes_operations.js",
+    "docs/js/nes_timed_client.js",
+    "docs/js/nes_timed_state.js",
     "docs/js/nesapu.js",
     "docs/js/nesapu_wasm.js",
     "docs/js/nesapuaudioengine.js",
@@ -121,9 +125,16 @@
     "docs/js/segapsg_timed_state.js",
     "docs/js/segapsgsynth.js",
     "docs/js/sid.js",
+    "docs/js/sid_operations.js",
+    "docs/js/sid_timed_client.js",
+    "docs/js/sid_timed_state.js",
     "docs/js/sid_waveforms.js",
     "docs/js/sidsynth.js",
     "docs/js/snes_brr.js",
+    "docs/js/snes_operation_state.js",
+    "docs/js/snes_operations.js",
+    "docs/js/snes_timed_client.js",
+    "docs/js/snes_timed_state.js",
     "docs/js/snessynth.js",
     "docs/js/soundchip_mixer.js",
     "docs/js/soundchip_mixer_presets.js",
@@ -288,36 +299,36 @@
     {
       "path": "js/huc6280_operations.js",
       "sourcePath": "docs/js/huc6280_operations.js",
-      "bytes": 12810,
-      "sha256": "f6865b55673cd2bad6c3f74f77069f928267775fc41bc38b1ec31cfb3ebb06bc",
+      "bytes": 12830,
+      "sha256": "43863f77e3db95faa963d2a4e7470fdc823da9c10d5a314061361d1cb1301226",
       "localImports": [
-        "./huc6280synth.js"
+        "./huc6280synth.js?v=audio-stability-2"
       ]
     },
     {
       "path": "js/huc6280_timed_client.js",
       "sourcePath": "docs/js/huc6280_timed_client.js",
-      "bytes": 9683,
-      "sha256": "72f881b0c6b21071c210f93930f34891cb8b242125b0d6834a75d572894198aa",
+      "bytes": 9723,
+      "sha256": "a2912cde46f5d1843e160719d07bf459d65ded8c2a9f8af19b0e9ab880710a91",
       "localImports": [
-        "./huc6280_operations.js",
-        "./huc6280_timed_state.js"
+        "./huc6280_operations.js?v=audio-stability-2",
+        "./huc6280_timed_state.js?v=audio-stability-2"
       ]
     },
     {
       "path": "js/huc6280_timed_state.js",
       "sourcePath": "docs/js/huc6280_timed_state.js",
-      "bytes": 2300,
-      "sha256": "ecd768432d604e125db33d8b0e66a87b804e65f385f3df64d076087939ec1f93",
+      "bytes": 2320,
+      "sha256": "3f00a9dbb219b4b748fd40861f8da8ddd067aacfa10ede308d3d1735b009ccd5",
       "localImports": [
-        "./huc6280_operations.js"
+        "./huc6280_operations.js?v=audio-stability-2"
       ]
     },
     {
       "path": "js/huc6280synth.js",
       "sourcePath": "docs/js/huc6280synth.js",
-      "bytes": 11575,
-      "sha256": "148b7218b22e4473dd2342d153a196d169cae828c7d3a2e961bfc1a1d5859dc1",
+      "bytes": 11595,
+      "sha256": "379fdb24c6e8d9aaf1c184f5fc2fbab164eba1ee5de89df1bfdd55300368837b",
       "localImports": [
         "./soundchip_pitch.js"
       ]
@@ -410,8 +421,8 @@
     {
       "path": "js/native_runtime_synth.js",
       "sourcePath": "docs/js/native_runtime_synth.js",
-      "bytes": 21046,
-      "sha256": "f6d70a0dab83b4cc2c2b4c5c95499c2750d5e3e1d19ed2621cbcb7692f23f644",
+      "bytes": 21042,
+      "sha256": "2dd17c634cb4bde6136a3f44e1641dfa6bdbaa841871ca63d6e923287b7cb210",
       "localImports": [
         "./playground_ay8910.js?v=pokey-prepare-1",
         "./playground_ay8910_audio.js?v=rf5c164-notes-1",
@@ -433,7 +444,7 @@
         "./playground_scsp_audio.js?v=rf5c164-notes-1",
         "./playground_segapsg.js?v=pokey-prepare-1",
         "./playground_segapsg_audio.js?v=rf5c164-notes-1",
-        "./playground_sid.js?v=pokey-prepare-1",
+        "./playground_sid.js?v=sid-timed-1",
         "./playground_sid_audio.js?v=ps1-deferred-release-1",
         "./playground_snes.js?v=y8950-adpcm-ui-1",
         "./playground_snes_audio.js?v=rf5c164-notes-1",
@@ -515,6 +526,45 @@
       "bytes": 1154,
       "sha256": "3e97884bae801319ac802378ace60591f489dec533aec2e26663685ab08f378c",
       "localImports": []
+    },
+    {
+      "path": "js/nes_operation_state.js",
+      "sourcePath": "docs/js/nes_operation_state.js",
+      "bytes": 2171,
+      "sha256": "280322240074550fb396357e630b22c9c5f183cade75c2482ec05f6ab4685340",
+      "localImports": [
+        "./nesapu.js"
+      ]
+    },
+    {
+      "path": "js/nes_operations.js",
+      "sourcePath": "docs/js/nes_operations.js",
+      "bytes": 14834,
+      "sha256": "b74aff5008143152ffb8567e7058ada8f888da0520ef18ce49ea443bc10f2224",
+      "localImports": [
+        "./nes_operation_state.js",
+        "./nesapusynth.js"
+      ]
+    },
+    {
+      "path": "js/nes_timed_client.js",
+      "sourcePath": "docs/js/nes_timed_client.js",
+      "bytes": 11757,
+      "sha256": "53d8550b7ec6d6710966599b758fcfa6b18071416318ed1d6d55fe2089363f84",
+      "localImports": [
+        "./nes_operations.js",
+        "./nes_timed_state.js",
+        "./playground_chip_clock.js"
+      ]
+    },
+    {
+      "path": "js/nes_timed_state.js",
+      "sourcePath": "docs/js/nes_timed_state.js",
+      "bytes": 3486,
+      "sha256": "64a75bded5afff89d56eff647da43e3e396c7774801017a763a09d8e909d517b",
+      "localImports": [
+        "./nes_operation_state.js"
+      ]
     },
     {
       "path": "js/nesapu.js",
@@ -714,11 +764,11 @@
     {
       "path": "js/playground_huc6280.js",
       "sourcePath": "docs/js/playground_huc6280.js",
-      "bytes": 5310,
-      "sha256": "b6d7240ac297e461c0a48806e6ef9dd97b2bbcb0ca5df0501b2206d0726276fe",
+      "bytes": 5350,
+      "sha256": "7325c27e8b2d3f2a1908b5a2384cc23ea7870e40b5265959d4a4daf2c4bbca23",
       "localImports": [
-        "./huc6280_operations.js",
-        "./huc6280_timed_client.js",
+        "./huc6280_operations.js?v=audio-stability-2",
+        "./huc6280_timed_client.js?v=audio-stability-2",
         "./huc6280synth.js?v=audio-stability-2",
         "./playground_chip_clock.js?v=pokey-prepare-1"
       ]
@@ -770,12 +820,13 @@
     {
       "path": "js/playground_nes.js",
       "sourcePath": "docs/js/playground_nes.js",
-      "bytes": 5417,
-      "sha256": "93936960519761e0324e37959bfd59357fd8583e9caae9cf7c52e1a2cee11e17",
+      "bytes": 6472,
+      "sha256": "f09b4d5958718332bbf3c8cef55bb7e77a0e0a0776b100f8ad53d26146d6f592",
       "localImports": [
-        "./nesapu.js?v=nes-wasm-1",
-        "./nesapusynth.js?v=pokey-mode-1",
-        "./playground_chip_clock.js?v=pokey-prepare-1"
+        "./nes_timed_client.js",
+        "./nesapu.js",
+        "./nesapusynth.js",
+        "./playground_chip_clock.js"
       ]
     },
     {
@@ -835,8 +886,8 @@
     {
       "path": "js/playground_performance_processor.js",
       "sourcePath": "docs/js/playground_performance_processor.js",
-      "bytes": 31346,
-      "sha256": "0be928e88ecf21824b15afa12b96592db2c59bfdbd59680b4469543fa4235f6b",
+      "bytes": 34705,
+      "sha256": "6255ae232c5ccde88af56d86144ef76b52918a47ec97be130b5dd94180f3fc8b",
       "localImports": [
         "./playground_performance_queue.js"
       ]
@@ -844,8 +895,8 @@
     {
       "path": "js/playground_performance_queue.js",
       "sourcePath": "docs/js/playground_performance_queue.js",
-      "bytes": 24368,
-      "sha256": "5cb51d73ea0b9448a0991e81560101d1a0924248e08fa5bb572ff2b7713964f6",
+      "bytes": 26074,
+      "sha256": "c6d6340b3704bbf5e3e9cf385b1c5b8b7048d503fded6e3c787b71ce697e9371",
       "localImports": []
     },
     {
@@ -874,10 +925,10 @@
     {
       "path": "js/playground_ps1.js",
       "sourcePath": "docs/js/playground_ps1.js",
-      "bytes": 9458,
-      "sha256": "e8e8d2e8061cfccd0287273da0c251ff27ba9e6ef81c8bd4e3f8f931add739d8",
+      "bytes": 9691,
+      "sha256": "9b92b69b6fbb79f61cb081463341517904cb144ecd8eba76129e11af940808ee",
       "localImports": [
-        "./ps1_timed_client.js",
+        "./ps1_timed_client.js?v=ps1-deferred-release-1",
         "./ps1synth.js?v=ps1-deferred-release-1"
       ]
     },
@@ -891,28 +942,28 @@
     {
       "path": "js/playground_scsp.js",
       "sourcePath": "docs/js/playground_scsp.js",
-      "bytes": 7767,
-      "sha256": "146e962bfc151618a1fcbe1901f8a34db33ff7a38fe95ca9aba853b1e73b14d3",
+      "bytes": 7779,
+      "sha256": "7a11b3528317db69a4b22fda73827137c4bdcfcc39f895d8bc943267e3991e60",
       "localImports": [
-        "./scspsynth.js"
+        "./scspsynth.js?v=scsp-fm-1"
       ]
     },
     {
       "path": "js/playground_scsp_audio.js",
       "sourcePath": "docs/js/playground_scsp_audio.js",
-      "bytes": 3691,
-      "sha256": "63d545eb8f50741ca1db0416a70d7e7d61ffe272a9f2c088a6bc4c2c5725d861",
+      "bytes": 3688,
+      "sha256": "7e33a783444667cbda41749a89c39afc8990ff1b3b0bf111b05c0c1589c4c7fa",
       "localImports": []
     },
     {
       "path": "js/playground_segapsg.js",
       "sourcePath": "docs/js/playground_segapsg.js",
-      "bytes": 1908,
-      "sha256": "4f4b64f522e0578d31064aeb5e489135d322937c770064f2ae9a3c8187662be8",
+      "bytes": 1935,
+      "sha256": "25aa48abec9ffd185112efe9f133a5fde97495e233558e79ea0218fd363a1668",
       "localImports": [
         "./playground_chip_clock.js?v=pokey-prepare-1",
         "./segapsg_api.js?v=audio-numeric-bindings-1",
-        "./segapsg_timed_client.js"
+        "./segapsg_timed_client.js?v=audio-numeric-bindings-1"
       ]
     },
     {
@@ -929,24 +980,25 @@
     {
       "path": "js/playground_segapsg_worklet.js",
       "sourcePath": "docs/js/playground_segapsg_worklet.js",
-      "bytes": 8890,
-      "sha256": "08b9cee7744dcd6024146467167a3aac88b98f3793c176465ff6ef2c4cf49ded",
+      "bytes": 9147,
+      "sha256": "f647e692823d3f5c52e7de2e8887e648ba64a27a36b6fec564e19a61e394fe0e",
       "localImports": [
-        "../generated/segapsg_wasm.js",
-        "./playground_chip_clock.js",
-        "./playground_chip_inspector_state.js",
-        "./playground_performance_processor.js",
-        "./segapsg.js",
-        "./segapsg_timed_processor.js"
+        "../generated/segapsg_wasm.js?v=audio-numeric-bindings-1",
+        "./playground_chip_clock.js?v=pokey-prepare-1",
+        "./playground_chip_inspector_state.js?v=rf5c164-notes-1",
+        "./playground_performance_processor.js?v=sid-timed-1",
+        "./segapsg.js?v=audio-numeric-bindings-1",
+        "./segapsg_timed_processor.js?v=audio-numeric-bindings-1"
       ]
     },
     {
       "path": "js/playground_sid.js",
       "sourcePath": "docs/js/playground_sid.js",
-      "bytes": 4259,
-      "sha256": "73be912de3378eadd5e22d3941b60d34b05dc8c671ff89ac12c55976401865e2",
+      "bytes": 6643,
+      "sha256": "032e3e659faa62cff93498aa5e75c5873cb4fb706b191c25f60cbf90e6d2de2a",
       "localImports": [
         "./playground_chip_clock.js",
+        "./sid_timed_client.js",
         "./sidsynth.js"
       ]
     },
@@ -963,11 +1015,12 @@
     {
       "path": "js/playground_snes.js",
       "sourcePath": "docs/js/playground_snes.js",
-      "bytes": 9197,
-      "sha256": "d6392d9825e00d4f0c43d32e88eb773e2c90b799a4418076f01c435c6afe3862",
+      "bytes": 9234,
+      "sha256": "627ad7aa23348c0b686a6a9f94172871c64ffca1dd40fb4017ad8b421193d271",
       "localImports": [
-        "./snessynth.js?v=spc-song-js-1",
-        "./spc.js?v=spc-events-1"
+        "./snes_timed_client.js",
+        "./snessynth.js",
+        "./spc.js"
       ]
     },
     {
@@ -980,14 +1033,14 @@
     {
       "path": "js/playground_wonderswan.js",
       "sourcePath": "docs/js/playground_wonderswan.js",
-      "bytes": 5199,
-      "sha256": "2facea60f4d7e636a00fcc0695a3e3a1d074a389695432966430c2c1d5d77724",
+      "bytes": 5289,
+      "sha256": "1ae88852a873b57bb07a7c8e2e66af86c67b64ef4963635595f96bce5843d4e8",
       "localImports": [
-        "./playground_chip_clock.js",
-        "./wonderswan_operations.js",
-        "./wonderswan_timed_client.js",
-        "./wonderswan_timeline.js",
-        "./wonderswansynth.js"
+        "./playground_chip_clock.js?v=pokey-prepare-1",
+        "./wonderswan_operations.js?v=pokey-prepare-1",
+        "./wonderswan_timed_client.js?v=pokey-prepare-1",
+        "./wonderswan_timeline.js?v=pokey-prepare-1",
+        "./wonderswansynth.js?v=pokey-prepare-1"
       ]
     },
     {
@@ -1023,11 +1076,11 @@
     {
       "path": "js/playground_ym2413.js",
       "sourcePath": "docs/js/playground_ym2413.js",
-      "bytes": 3611,
-      "sha256": "d35ce3976cab465747aa0edb304ab42bc9729fd534f17936d28a2dced2329903",
+      "bytes": 3626,
+      "sha256": "da3592207562e866d2afcee6380459bce7f129c8f6698a9521d7051c1e69a429",
       "localImports": [
         "./playground_chip_clock.js?v=pokey-prepare-1",
-        "./ym2413_timed_client.js",
+        "./ym2413_timed_client.js?v=pokey-mode-1",
         "./ym2413synth.js?v=pokey-mode-1"
       ]
     },
@@ -1044,27 +1097,27 @@
     {
       "path": "js/playground_ym2413_inspector.js",
       "sourcePath": "docs/js/playground_ym2413_inspector.js",
-      "bytes": 6234,
-      "sha256": "a8ba5265849691aaca25918fa8ae0a6add57bf7a5a98fdefbd6a4219f05343fc",
+      "bytes": 6236,
+      "sha256": "d152f05710a177e986ea02d3e5c741ca1e0630f0e255efba2285378eef558986",
       "localImports": [
         "./playground_keyboard_channels.js?v=scsp-fm-1",
-        "./playground_performance_processor.js?v=scsp-fm-1",
+        "./playground_performance_processor.js?v=sid-timed-1",
         "./ym2413synth.js?v=pokey-mode-1"
       ]
     },
     {
       "path": "js/playground_ym2413_worklet.js",
       "sourcePath": "docs/js/playground_ym2413_worklet.js",
-      "bytes": 16406,
-      "sha256": "8975cb82841f35aae3d7e9aff496fc2115af4302fa7535667ecbf589d329ccd7",
+      "bytes": 16515,
+      "sha256": "1b157694d250c8aa4c5559e24c4f6661bcbd05589afe3a72e6551c1b4b45a280",
       "localImports": [
         "../generated/ym2413_wasm.js",
         "./playground_chip_clock.js?v=pokey-prepare-1",
         "./playground_chip_inspector_state.js?v=rf5c164-notes-1",
-        "./playground_performance_processor.js?v=scsp-fm-1",
+        "./playground_performance_processor.js?v=sid-timed-1",
         "./playground_ym2413_inspector.js?v=ps1-deferred-release-1",
         "./ym2413.js?v=audio-stability-2",
-        "./ym2413_timed_processor.js"
+        "./ym2413_timed_processor.js?v=pokey-mode-1"
       ]
     },
     {
@@ -1124,10 +1177,10 @@
     {
       "path": "js/ps1_operations.js",
       "sourcePath": "docs/js/ps1_operations.js",
-      "bytes": 12840,
-      "sha256": "e56703fd42cd8e5c53308e198b91e4e0fb221b93655fceccbca0be26fa01081e",
+      "bytes": 12865,
+      "sha256": "748824972f995a88c2a6b8221c4a144a1774ea8299524e03be092f6de5bfb831",
       "localImports": [
-        "./ps1synth.js"
+        "./ps1synth.js?v=ps1-deferred-release-1"
       ]
     },
     {
@@ -1147,20 +1200,20 @@
     {
       "path": "js/ps1_timed_client.js",
       "sourcePath": "docs/js/ps1_timed_client.js",
-      "bytes": 9202,
-      "sha256": "97484ea8696d0c7042f5011f2630b8e6eb2ad158aa0a1b301e46aa61cd87dd9c",
+      "bytes": 9252,
+      "sha256": "a2686e2f0fa19b7afd0f3bfac681d87f078d628cfd16aa2940a20d851f190309",
       "localImports": [
-        "./ps1_operations.js",
-        "./ps1_timed_state.js"
+        "./ps1_operations.js?v=ps1-deferred-release-1",
+        "./ps1_timed_state.js?v=ps1-deferred-release-1"
       ]
     },
     {
       "path": "js/ps1_timed_state.js",
       "sourcePath": "docs/js/ps1_timed_state.js",
-      "bytes": 2063,
-      "sha256": "82c6924c96daf1802568041730d44f2d87d1e88149dcd8dc812e21d8fe24f23f",
+      "bytes": 2088,
+      "sha256": "a125fee239bbd9b26a3e673574e7f03e0253bf8204a4c0a01bcbf71ac51f8e37",
       "localImports": [
-        "./ps1_operations.js"
+        "./ps1_operations.js?v=ps1-deferred-release-1"
       ]
     },
     {
@@ -1184,8 +1237,8 @@
     {
       "path": "js/ps1synth.js",
       "sourcePath": "docs/js/ps1synth.js",
-      "bytes": 23350,
-      "sha256": "7177eb04bca8ca02f3e5dd74b3edb0eef2374517413ba87c3ea6acac970dced5",
+      "bytes": 23398,
+      "sha256": "8d1d9f604d5f94ce140c4202d75ed0e0087921848c0c6590e0cd609e16fa8e7d",
       "localImports": [
         "./ps1_parameters.js?v=ps1-voice-editor-1",
         "./ps1_spu.js?v=ps1-deferred-release-1",
@@ -1271,10 +1324,10 @@
     {
       "path": "js/scspsynth.js",
       "sourcePath": "docs/js/scspsynth.js",
-      "bytes": 26445,
-      "sha256": "6c3f663ce8395c8c70672d4a7f8f23ba33fee32c10db4b77ef68cb673af914de",
+      "bytes": 26457,
+      "sha256": "f893c4e2a9cbb3fbae52231b2ba3b9899d217a991b55219c5493603466d2d221",
       "localImports": [
-        "./scsp.js",
+        "./scsp.js?v=scsp-fm-1",
         "./scsp_dsp.js",
         "./scsp_dsp_delay.js",
         "./soundchip_pitch.js"
@@ -1290,8 +1343,8 @@
     {
       "path": "js/segapsg_api.js",
       "sourcePath": "docs/js/segapsg_api.js",
-      "bytes": 1086,
-      "sha256": "cfbc80e40bf100cec95af12da6f96790edefab1c7245bbc04f5b04e25e24aeaa",
+      "bytes": 1097,
+      "sha256": "bcd109ff45dcb60cf76a3473fcfa691918ea54acc5b0f359e054d1bb09ec1417",
       "localImports": [
         "./segapsgsynth.js?v=audio-numeric-bindings-1"
       ]
@@ -1299,47 +1352,47 @@
     {
       "path": "js/segapsg_operations.js",
       "sourcePath": "docs/js/segapsg_operations.js",
-      "bytes": 13653,
-      "sha256": "35abfbc4439b716e7d6c8f131375173978a52617e75c1a6d570b5b3ff13c662c",
+      "bytes": 13725,
+      "sha256": "d3c73d9d42b85905cadf7a534b15f03b5e54ff92871e796e206aa196329e13b2",
       "localImports": [
-        "./segapsg.js",
-        "./segapsgsynth.js"
+        "./segapsg.js?v=audio-numeric-bindings-1",
+        "./segapsgsynth.js?v=audio-numeric-bindings-1"
       ]
     },
     {
       "path": "js/segapsg_timed_client.js",
       "sourcePath": "docs/js/segapsg_timed_client.js",
-      "bytes": 11219,
-      "sha256": "ceac935d1a124d60660b0275bc873038c9680b6e0648d678d2e1ab22c9bad4ee",
+      "bytes": 11287,
+      "sha256": "5c62280017f4c9d81a9b45332e2a48a4ece6ca22843c4e4b95455ce9ceea018c",
       "localImports": [
-        "./segapsg_operations.js",
-        "./segapsg_timed_state.js"
+        "./segapsg_operations.js?v=audio-numeric-bindings-1",
+        "./segapsg_timed_state.js?v=audio-numeric-bindings-1"
       ]
     },
     {
       "path": "js/segapsg_timed_processor.js",
       "sourcePath": "docs/js/segapsg_timed_processor.js",
-      "bytes": 11990,
-      "sha256": "265c9f471cbf549c2c7812f16743bdedf15af1298397f8342528b5b7f95fb4d4",
+      "bytes": 12101,
+      "sha256": "8d372478a8970949a504338a882205de0a3cce2352687d573a489fa8ad89c3e8",
       "localImports": [
-        "./segapsg_operations.js",
-        "./segapsg_timed_state.js"
+        "./segapsg_operations.js?v=audio-numeric-bindings-1",
+        "./segapsg_timed_state.js?v=audio-numeric-bindings-1"
       ]
     },
     {
       "path": "js/segapsg_timed_state.js",
       "sourcePath": "docs/js/segapsg_timed_state.js",
-      "bytes": 2425,
-      "sha256": "f1e2638ac9b3037d461ef89c02fab9b423edd34bc775632a2eb840d4662803c6",
+      "bytes": 2452,
+      "sha256": "9ef6a3f86d289b5628713bda7dcd56dafe4e798eb690af6e4da5e3210d4cede5",
       "localImports": [
-        "./segapsg_operations.js"
+        "./segapsg_operations.js?v=audio-numeric-bindings-1"
       ]
     },
     {
       "path": "js/segapsgsynth.js",
       "sourcePath": "docs/js/segapsgsynth.js",
-      "bytes": 10444,
-      "sha256": "326880650f7161ec619119802fd253312bf14775850bcb1ecfdc9a6ab33624e9",
+      "bytes": 10719,
+      "sha256": "4ca983d002a03b66ce24a3746f801e0f202ee3cd46cae5a2638c6bcd1b17623b",
       "localImports": [
         "./segapsg.js?v=audio-numeric-bindings-1",
         "./soundchip_pitch.js"
@@ -1351,6 +1404,34 @@
       "bytes": 4846,
       "sha256": "62225755b0b01471b85313be7992a464f8b501e5ad81a6c86c1ce425c941d870",
       "localImports": []
+    },
+    {
+      "path": "js/sid_operations.js",
+      "sourcePath": "docs/js/sid_operations.js",
+      "bytes": 12745,
+      "sha256": "f161b3aa8f0cedcdd34bc4d22f6f7a750e92d4cb43aa489bbeb97885bfa1f288",
+      "localImports": [
+        "./sidsynth.js"
+      ]
+    },
+    {
+      "path": "js/sid_timed_client.js",
+      "sourcePath": "docs/js/sid_timed_client.js",
+      "bytes": 10275,
+      "sha256": "2ac14221fbb458c2e1dd1decd758c2f7569f1cffb18a17559d3135f795eeb11a",
+      "localImports": [
+        "./sid_operations.js?v=sid-timed-1",
+        "./sid_timed_state.js?v=sid-timed-1"
+      ]
+    },
+    {
+      "path": "js/sid_timed_state.js",
+      "sourcePath": "docs/js/sid_timed_state.js",
+      "bytes": 2322,
+      "sha256": "59cf7d3bdb26ca737577356fa3287dd8066dbca965ae81d4cc6c50072ce49a2c",
+      "localImports": [
+        "./sid_operations.js?v=sid-timed-1"
+      ]
     },
     {
       "path": "js/sid_waveforms.js",
@@ -1381,6 +1462,45 @@
       ]
     },
     {
+      "path": "js/snes_operation_state.js",
+      "sourcePath": "docs/js/snes_operation_state.js",
+      "bytes": 4636,
+      "sha256": "685b6f22e093289912948800dcf186ebeeb4242c610d3c01a09ee77fb9f45dd5",
+      "localImports": [
+        "./snessynth.js"
+      ]
+    },
+    {
+      "path": "js/snes_operations.js",
+      "sourcePath": "docs/js/snes_operations.js",
+      "bytes": 13102,
+      "sha256": "47a3213ef9bb404165d49f6ed340831d25b0135c0e0f2c8d62c445f2bb4a57ff",
+      "localImports": [
+        "./snes_operation_state.js",
+        "./snessynth.js"
+      ]
+    },
+    {
+      "path": "js/snes_timed_client.js",
+      "sourcePath": "docs/js/snes_timed_client.js",
+      "bytes": 11789,
+      "sha256": "52e49547817a2a6e6ecce6124018ac015e66e072a87c350d88416d44aa568132",
+      "localImports": [
+        "./playground_chip_clock.js",
+        "./snes_operations.js",
+        "./snes_timed_state.js"
+      ]
+    },
+    {
+      "path": "js/snes_timed_state.js",
+      "sourcePath": "docs/js/snes_timed_state.js",
+      "bytes": 3638,
+      "sha256": "86b298d2a7ccb20fe760359b20dfbe7cc4a0a35a43ce22eff596f2209a4b9e98",
+      "localImports": [
+        "./snes_operation_state.js"
+      ]
+    },
+    {
       "path": "js/snessynth.js",
       "sourcePath": "docs/js/snessynth.js",
       "bytes": 17342,
@@ -1400,8 +1520,8 @@
     {
       "path": "js/soundchip_mixer_presets.js",
       "sourcePath": "docs/js/soundchip_mixer_presets.js",
-      "bytes": 3277,
-      "sha256": "38887acc235d3c26a88c1d84ef1190e97038715e818786d68f4ccf7a930741da",
+      "bytes": 3296,
+      "sha256": "7d254801a2856cd0ce5262e45496efdc85c756e7b7d74e00b56f4ff13dbf7d6d",
       "localImports": []
     },
     {
@@ -1527,30 +1647,30 @@
     {
       "path": "js/wonderswan_operations.js",
       "sourcePath": "docs/js/wonderswan_operations.js",
-      "bytes": 12371,
-      "sha256": "2a6fb0fdd65646a3159c5ad587aecfbbb4fa75ed641672379066464623eff905",
+      "bytes": 12417,
+      "sha256": "0788af0a49dd17410ca89c19c1182f75297994933213615bb24e88e3ee046490",
       "localImports": [
-        "./wonderswan.js",
-        "./wonderswansynth.js"
+        "./wonderswan.js?v=wonderswan-pcm-timeline-1",
+        "./wonderswansynth.js?v=pokey-prepare-1"
       ]
     },
     {
       "path": "js/wonderswan_timed_client.js",
       "sourcePath": "docs/js/wonderswan_timed_client.js",
-      "bytes": 9832,
-      "sha256": "2c7ca33938246d5d5110cb7e0f5cd849200d305e3cd9e1c838ae154ef884e7e8",
+      "bytes": 9868,
+      "sha256": "d58239da650932213351ec5541040004811cf9712ca51ea2b583514996fa41dc",
       "localImports": [
-        "./wonderswan_operations.js",
-        "./wonderswan_timed_state.js"
+        "./wonderswan_operations.js?v=pokey-prepare-1",
+        "./wonderswan_timed_state.js?v=pokey-prepare-1"
       ]
     },
     {
       "path": "js/wonderswan_timed_state.js",
       "sourcePath": "docs/js/wonderswan_timed_state.js",
-      "bytes": 2293,
-      "sha256": "a19a30d95dc204d4359af64a2d401e3e26021db9f08556e6dfe294fdc7f166e6",
+      "bytes": 2311,
+      "sha256": "0ddae709bbcda261e0612091145007f8a6319b45ab64fd8352d725e99dcf4732",
       "localImports": [
-        "./wonderswan_operations.js"
+        "./wonderswan_operations.js?v=pokey-prepare-1"
       ]
     },
     {
@@ -1603,40 +1723,40 @@
     {
       "path": "js/ym2413_operations.js",
       "sourcePath": "docs/js/ym2413_operations.js",
-      "bytes": 13110,
-      "sha256": "c13b26f0e0d6295cea3ba07152a5be4e55bd229662d90e90f5c2b13bbc8f70d0",
+      "bytes": 13145,
+      "sha256": "cb358025e558b7dab44c99f42e7b1057b98f3de1879c1c7d05217a5e82032dd5",
       "localImports": [
-        "./ym2413.js",
-        "./ym2413synth.js"
+        "./ym2413.js?v=audio-stability-2",
+        "./ym2413synth.js?v=pokey-mode-1"
       ]
     },
     {
       "path": "js/ym2413_timed_client.js",
       "sourcePath": "docs/js/ym2413_timed_client.js",
-      "bytes": 11936,
-      "sha256": "e8e5f93aff9796b6466b6b7df40f134b2c20faf6845db115ac2ab10b12f17e0a",
+      "bytes": 11966,
+      "sha256": "b2bcad3859471b5e3d15d852a0dd48935931f32d76138cefb912a8e909382bfa",
       "localImports": [
-        "./ym2413_operations.js",
-        "./ym2413_timed_state.js"
+        "./ym2413_operations.js?v=pokey-mode-1",
+        "./ym2413_timed_state.js?v=pokey-mode-1"
       ]
     },
     {
       "path": "js/ym2413_timed_processor.js",
       "sourcePath": "docs/js/ym2413_timed_processor.js",
-      "bytes": 15213,
-      "sha256": "a37411b6e4d9af1e1150fddb6e713be995575bf80ebb01333f1307b6a62e846e",
+      "bytes": 15271,
+      "sha256": "1c4688efd06dcbaca2a2661c2a98629512b0fb17251d4c65effedde130d9baff",
       "localImports": [
-        "./ym2413_operations.js",
-        "./ym2413_timed_state.js"
+        "./ym2413_operations.js?v=pokey-mode-1",
+        "./ym2413_timed_state.js?v=pokey-mode-1"
       ]
     },
     {
       "path": "js/ym2413_timed_state.js",
       "sourcePath": "docs/js/ym2413_timed_state.js",
-      "bytes": 2242,
-      "sha256": "b04aefc96c253078689bafe881073e60861deb1116795ff7fd21fa1c60476295",
+      "bytes": 2257,
+      "sha256": "0974760c9879867d1738dc3b4f3e884b21b60ac9b80932e113c0e4f3e6c0b547",
       "localImports": [
-        "./ym2413_operations.js"
+        "./ym2413_operations.js?v=pokey-mode-1"
       ]
     },
     {
@@ -1704,12 +1824,12 @@
     {
       "path": "playground/playground_monaco.js",
       "sourcePath": "docs/playground/playground_monaco.js",
-      "bytes": 23125,
-      "sha256": "be30124bb6976ba2b82dc7fd18662619bec989a3618eb7346c7a538e56d8b1a0",
+      "bytes": 23109,
+      "sha256": "f3ca7d8ed7b1e080d969b9cf6910d0219d6e94e9dfde8c665a5d839237fe84ea",
       "localImports": [
         "./playground_declarations.js?v=ps1-vab-api-1",
-        "./playground_monaco_completion.js?v=scsp-dsp-execution-1",
-        "./playground_monaco_definitions.js?v=scsp-dsp-execution-1"
+        "./playground_monaco_completion.js?v=ps1-vab-api-1",
+        "./playground_monaco_definitions.js?v=sid-timed-1"
       ]
     },
     {
@@ -1724,8 +1844,8 @@
     {
       "path": "playground/playground_monaco_definitions.js",
       "sourcePath": "docs/playground/playground_monaco_definitions.js",
-      "bytes": 28984,
-      "sha256": "6020dc8e5aee0476d2b2ab31ea01d4ea9566e84d27750db7a22c9abdc73e3b2c",
+      "bytes": 32068,
+      "sha256": "604bde1eed90c72584ec6b97ff8521ce4b007955d88e83f6447f750d27d3d46a",
       "localImports": []
     },
     {
@@ -1749,8 +1869,8 @@
     {
       "path": "synth-smsgear/audio.js",
       "sourcePath": "docs/synth-smsgear/audio.js",
-      "bytes": 9560,
-      "sha256": "4fa0a867436b657fd9fec990acf1932be8a6fcd7c606ab99d098f0ffa7bf5dae",
+      "bytes": 9871,
+      "sha256": "48b2241bc1fd950d89138f078d7ef7d5d708922d71a1e5d932a24073bcce64f2",
       "localImports": [
         "../js/native_runtime_synth.js",
         "../js/playground_chip_inspector.js",
@@ -1774,8 +1894,8 @@
     {
       "path": "synth-smsgear/code_declarations.js",
       "sourcePath": "docs/synth-smsgear/code_declarations.js",
-      "bytes": 1850,
-      "sha256": "651ca1ce07d89fd60c99984f82e2607f9ec735dac2907822a2cdf28534ec0852",
+      "bytes": 2151,
+      "sha256": "ffe36638ca96706820a31863887d30c531873ebcc8d7b78bf27337d1eb9615df",
       "localImports": [
         "../synth/synth_code_declarations.js"
       ]
@@ -1819,8 +1939,8 @@
     {
       "path": "synth-smsgear/code_project.js",
       "sourcePath": "docs/synth-smsgear/code_project.js",
-      "bytes": 26444,
-      "sha256": "22d7d8e1666215c98bff9e535661db573fa04d291cb6deb7b501e6664ce05e2f",
+      "bytes": 26482,
+      "sha256": "f8a37ea8d0ccf703d7b782ce67b74b975b5c2d381de182366b3f055e061af5b9",
       "localImports": [
         "../js/tetorica_virtual_files/filesystem.js",
         "../js/tetorica_virtual_files/path.js",
@@ -2000,8 +2120,8 @@
     {
       "path": "synth/synth_code_controls.js",
       "sourcePath": "docs/synth/synth_code_controls.js",
-      "bytes": 24393,
-      "sha256": "bd40ee193e0c2d97e7f427fcd84f1194115aff1d157040c294402c6f1f324f80",
+      "bytes": 24399,
+      "sha256": "ca88288e72e3df425b6b4d20b0a0d7d266bba5b25ae5606e958857f49c30b6ef",
       "localImports": [
         "../playground/playground_monaco.js?v=synth-code-types-1&huc-source=2&sdsp-source=1",
         "./synth_code_declarations.js?v=megacd-cdda-1"
@@ -2010,8 +2130,8 @@
     {
       "path": "synth/synth_code_declarations.js",
       "sourcePath": "docs/synth/synth_code_declarations.js",
-      "bytes": 8299,
-      "sha256": "120562264e16dbe764955516da37bd44eee03855fe39fbbde3a04761afe1ead0",
+      "bytes": 9200,
+      "sha256": "c8c530687ca9eaa9ab0ed9b65caf5752b90e0e0784b2b2dd6894fd1f1d9700d7",
       "localImports": []
     },
     {
@@ -2024,8 +2144,8 @@
     {
       "path": "synth/synth_code_project.js",
       "sourcePath": "docs/synth/synth_code_project.js",
-      "bytes": 2161,
-      "sha256": "1fc9a746649eb98ad9dfaca8a82dd7bdb2087f4e601575e17c32b6c46c812077",
+      "bytes": 2482,
+      "sha256": "016b77a706886fe89ffcd87291606dd49a6ce6e83c002aca9ae6b674944e0821",
       "localImports": [
         "../js/tetorica_virtual_files/filesystem.js",
         "../js/tetorica_virtual_files/path.js",
@@ -2050,8 +2170,8 @@
     {
       "path": "synth/synth_expanded_tabs.js",
       "sourcePath": "docs/synth/synth_expanded_tabs.js",
-      "bytes": 8863,
-      "sha256": "27e4c37e7d65ff695c84a885cf0d8dfccced65f122690cf03ab7e820e089de64",
+      "bytes": 8995,
+      "sha256": "6faf0032553b80c9f0b1eb3d75dab77ec7dc16e130f9e4a58a8774bab3e16a08",
       "localImports": []
     },
     {
@@ -2160,6 +2280,6 @@
       ]
     }
   ],
-  "version": "dev",
+  "version": "0.100.1",
   "minified": false
 }

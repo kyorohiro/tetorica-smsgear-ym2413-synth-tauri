@@ -3,11 +3,13 @@ import {attachChipClock, CHIP_CLOCKS} from './playground_chip_clock.js';
  * No DOM, AudioNode or main-thread RPC. Observers are fire-and-forget.
  */
 import {GameboySynth} from './gameboysynth.js';
+import {attachGameboyTimedClient} from './gameboy_timed_client.js';
 import {createPrimaryGameboyApi} from './playground_gameboy.js';
 import {YM2612Synth} from './ym2612synth.js';
 import {attachYm2612TimedClient} from './ym2612_timed_client.js';
 import {YM2203Synth} from './ym2203synth.js';
 import {OPNFMSynth} from './opn_fm_synth.js';
+import {attachYm2608TimedClient} from './ym2608_timed_client.js';
 import {YM2608Synth} from './ym2608synth.js';
 import {YM2610BSynth} from './ym2610bsynth.js';
 import {createSegaPsgApi} from './segapsg_api.js';
@@ -62,10 +64,10 @@ export function createWorkerChip({port,capabilities,state,observe=()=>{}}){
  const name=capabilities.chip??'ym2612';
  const raw=name==='ym2612'?new YM2612Synth({transport}):name==='ym2203'?new YM2203Synth({transport}):name==='ym2608'?new YM2608Synth({transport}):['ym2610','ym2610b'].includes(name)?new YM2610BSynth({transport}):new OPNFMSynth({transport,chipName:name,channelCount:6,portCount:2,supportsPan:true,supportsLfo:true});
  const sectionNames=raw.adpcmA?['ssg','adpcmA','adpcmB']:['ssg','rhythm','adpcm'];
- function retainedLevels(){return name==='ym2203'&&capabilities.backend==='native-genesis'?raw.ssg._getState().levels:null;}
- function retainLevels(before){if(!before)return;const after=raw.ssg._getState().levels;for(let channel=0;channel<3;channel++)if(before[channel]!==after[channel])send({type:'ssg-retained-level',channel,level:after[channel]});}
+ function retainedLevels(){return (name==='ym2608'||name==='ym2203'&&capabilities.backend==='native-genesis')?raw.ssg._getState().levels:null;}
+ function retainLevels(before){if(!before)return;const after=raw.ssg._getState().levels;for(let channel=0;channel<3;channel++)if(before[channel]!==after[channel])name==='ym2608'?send({method:'ym2608Retained',args:[channel,after[channel]&31]}):send({type:'ssg-retained-level',channel,level:after[channel]});}
  function adoptState(state){if(!state)return;if(state.clock!==undefined)raw._adoptClock(state.clock);raw.channels=structuredClone(state.channels);raw.lfo=structuredClone(state.lfo);raw._modeRegister=state.modeRegister??0;if(state.dac)Object.assign(raw.dac ??= {}, structuredClone(state.dac));
-  if(name==='ym2612')state.timedState?raw._adoptTimedState(state.timedState):raw._invalidateTimedState();
+  if(['ym2612','ym2608'].includes(name))state.timedState?raw._adoptTimedState(state.timedState):raw._invalidateTimedState();
   for(const section of sectionNames){
    if(section==='ssg'&&state.ssg?.registers&&raw.ssg){raw.ssg._adoptState(state.ssg);continue;}
    const values=state[section]?.registers??state[section]?.levels??(section==='adpcmB'?state.adpcm?.registers:null);
@@ -81,6 +83,7 @@ export function createWorkerChip({port,capabilities,state,observe=()=>{}}){
   if(!state?.timedState)raw._invalidateTimedState();
   attachYm2612TimedClient(raw,{native:capabilities.backend==='native-genesis',engine:state?.engine??capabilities.engine??'ymfm'},port);
  }
+ if(name==='ym2608'){if(!state?.timedState)raw._invalidateTimedState();attachYm2608TimedClient(raw,{native:capabilities.backend==='native-genesis'},port);}
  enabled=true;
  const channelMethods=new Set(['setPreset','setOperator','setOperators','setAlgo','setPan','setModulation','setFrequency','setNote','setBlockFnum','noteOnRaw','keyOn','keyOff','noteOn','noteOff']);
  function invoke(method,args){
@@ -153,7 +156,12 @@ function createWorkerGameboy({port,state,observe}) {
  let enabled=false, notification=false;
  const send=command=>{if(enabled)port.postMessage([command]);};
  const raw=new GameboySynth({transport:{
-  writeRegister(offset,value){send({method:'writeRegister',args:[offset,value]});},
+  writeRegister(offset,value){
+   const state=raw._getState();
+   const keyIntent=[4,9,14,19].includes(offset)&&Boolean(value&128)||offset===22&&!(value&128)
+    ||offset===10&&!(value&128)||[2,7,17].includes(offset)&&!(value&0xf8);
+   send({method:'writeRegister',args:[offset,value],gameboyState:{voiceValue:state.voice[offset],initialized:state.initialized},keyIntent});
+  },
   reset(){send({method:'reset',args:[]});},
  }});
  attachChipClock(raw,port,state?.clock??CHIP_CLOCKS.gameboy,{primary:true,batch:true,
@@ -164,6 +172,7 @@ function createWorkerGameboy({port,state,observe}) {
   queueMicrotask(()=>{notification=false;observe({method:'gameboyState',args:[raw._getState()]});});
  };
  if(state)raw._adoptState(state);else raw.initialize();
+ attachGameboyTimedClient(raw,{},port);
  enabled=true;
  const gameboy=createPrimaryGameboyApi(raw);
  return {gameboy,raw,send,adoptState:state=>raw._adoptState(state),resume(){},

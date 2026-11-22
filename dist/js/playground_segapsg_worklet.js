@@ -2,18 +2,18 @@
 import {
 	createPsgTimedProcessor,
 	psgTimedCommandCost,
-} from "./segapsg_timed_processor.js";
+} from "./segapsg_timed_processor.js?v=audio-numeric-bindings-1";
 import {
 	ChipClockResampler,
 	CHIP_CLOCKS,
-} from "./playground_chip_clock.js";
+} from "./playground_chip_clock.js?v=pokey-prepare-1";
 import {
 	PsgInspectorState,
 	receiveChipInspector,
-} from "./playground_chip_inspector_state.js";
-import { SegaPSG } from "./segapsg.js";
-import factory from "../generated/segapsg_wasm.js";
-import { createProcessorPerformance } from "./playground_performance_processor.js";
+} from "./playground_chip_inspector_state.js?v=rf5c164-notes-1";
+import { SegaPSG } from "./segapsg.js?v=audio-numeric-bindings-1";
+import factory from "../generated/segapsg_wasm.js?v=audio-numeric-bindings-1";
+import { createProcessorPerformance } from "./playground_performance_processor.js?v=sid-timed-1";
 class Processor extends AudioWorkletProcessor {
 	constructor(options) {
 		super();
@@ -180,6 +180,10 @@ class Processor extends AudioWorkletProcessor {
 			else this.timed.receive(data, port);
 			return;
 		}
+		if (data?.method === "releaseTimedNotes") {
+			this.timed?.releaseNotes();
+			return;
+		}
 		if (
 			data?.type === "chip-inspector" &&
 			receiveChipInspector(
@@ -276,7 +280,8 @@ class Processor extends AudioWorkletProcessor {
 						? register
 						: this.inspector.latched;
 			this.chip.write(byte);
-			this.timed?.observeWrite(target, byte, metadata, port);
+			if (!metadata?.preserveOwner)
+				this.timed?.observeWrite(target, byte, metadata, port);
 		}
 		if (data.method === "setStereo" && this.stereoEnabled) {
 			this.chip.setStereo(...data.args);

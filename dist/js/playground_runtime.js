@@ -614,6 +614,7 @@ export function createPlaygroundRuntime(
     raw._beforeWrite=(register,value)=>{
       const loop=currentLoopContext;
       if(loop?.stopped)return false;
+      if(raw._sidParameterWrite)return true;
       if(![4,11,18].includes(register))return true;
       const channel=(register-4)/7,on=!!(value&1);
       if(!on&&loop&&owners.has(channel)&&owners.get(channel)!==voiceOwner(loop))return false;
@@ -921,7 +922,7 @@ export function createPlaygroundRuntime(
     }
     return {...core?.getState?.(), clock:sharedFm?.clock ?? core?.clock,
       ...(capabilities.chip==='ym2612'?{engine:core?.engine??megaDrive.engine??'ymfm'}:{}),
-      ...(capabilities.chip==='ym2612'&&core?._timedClientStateComplete?{timedState:core._getTimedState()}:{}), ...sections};
+      ...(['ym2612','ym2608'].includes(capabilities.chip)&&core?._timedClientStateComplete?{timedState:core._getTimedState()}:{}), ...sections};
   }
   // UI notes share the chip and its output gain, but own their channel until
   // released. The worklet arbitrates against Main and direct Worker writes.
@@ -2406,7 +2407,7 @@ export function createPlaygroundRuntime(
     }
     const fm = keyboardApi(ayTimedLifecycle.wrap(sharedFm));
     const nativeApis = Object.fromEntries(Object.entries(nativePrimaryApis()).map(([name,api])=>[name,keyboardApi(api)]));
-    const gameboy = isGameboy ? nativeApis.gameboy ?? keyboardApi(sharedGameboy) : undefined;
+    const gameboy = isGameboy ? nativeApis.gameboy ?? keyboardApi(ayTimedLifecycle.wrap(sharedGameboy)) : undefined;
     const psg = nativeApis.psg ?? keyboardApi(megaDrive.psg);
     const msm5205Api=Object.fromEntries(['loadMemory','loadSample','play','stop','reset','writeRegister','getState'].map(method=>[method,async(...args)=>{
       if(runToken!==currentRunToken)throw new Error('Run stopped');
@@ -2626,7 +2627,7 @@ export function createPlaygroundRuntime(
         // Keep the current method visible: useSoundChip wraps it to evict the
         // cached endpoint, including when a device fails asynchronously.
         device.dispose=()=>client.dispose();
-        const api=keyboardApi(device.native&&name!=='spc'?ownedNativeExtraApi(device,client):name==='rf5c164'?ownedMainPcmApi(device,client):['wonderswan','sid'].includes(name)?wonderSwanExtraApi(client):ayTimedLifecycle.wrap(client));
+        const api=keyboardApi(device.native&&name!=='spc'?ownedNativeExtraApi(device,client):name==='rf5c164'?ownedMainPcmApi(device,client):name==='wonderswan'?wonderSwanExtraApi(client):name==='sid'?ayTimedLifecycle.wrap(wonderSwanExtraApi(client)):ayTimedLifecycle.wrap(client));
         if(client._timedOperations){currentLoopContext=callerLoop;if(callerLoop?.stopped){device.dispose();throw new DOMException('Run stopped','AbortError');}}
         if(ownsMainScope)return resumeNativeExtraCaller(callerLoop,()=>api).catch(error=>{device.dispose();throw error;});
         return api;
